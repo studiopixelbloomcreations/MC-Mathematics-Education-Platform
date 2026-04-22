@@ -5,6 +5,7 @@ export type PaperStatus = 'completed' | 'upcoming'
 export type ClassStatus = 'scheduled' | 'cancelled'
 export type ClassAudience = 'group' | 'whole'
 export type HallOfFameCategory = 'A/L' | 'O/L'
+export type ThemeMode = 'dark' | 'light'
 
 export interface UserProfile {
   user_id: string
@@ -33,6 +34,22 @@ export interface HallOfFameEntry {
   image_url: string
   achievement: string
   display_order: number
+}
+
+export interface TeamMember {
+  id: string
+  name: string
+  role: string
+  image_url: string
+  bio: string
+}
+
+export interface FeedbackEntry {
+  id: string
+  student_name: string
+  feedback: string
+  rating: number | null
+  grade: number | null
 }
 
 export interface Lesson {
@@ -86,6 +103,8 @@ export interface LandingPageData {
   announcements: Announcement[]
   classes: ManagedClass[]
   hallOfFame: HallOfFameEntry[]
+  feedback: FeedbackEntry[]
+  teamMembers: TeamMember[]
 }
 
 export interface DashboardData {
@@ -104,4 +123,6 @@ export interface AdminData {
   announcements: Announcement[]
   classes: ManagedClass[]
   hallOfFame: HallOfFameEntry[]
+  feedback: FeedbackEntry[]
+  teamMembers: TeamMember[]
 }

@@ -102,6 +102,25 @@ create table if not exists public.hall_of_fame (
   created_at timestamptz not null default timezone('utc', now())
 );
 
+create table if not exists public.feedback (
+  id uuid primary key default gen_random_uuid(),
+  student_name text not null,
+  feedback text not null,
+  rating integer check (rating between 1 and 5),
+  grade integer references public.grades (grade),
+  created_at timestamptz not null default timezone('utc', now())
+);
+
+create table if not exists public.team_members (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  role text not null,
+  image_url text not null,
+  bio text not null,
+  display_order integer not null default 1,
+  created_at timestamptz not null default timezone('utc', now())
+);
+
 create or replace function public.generate_student_id(p_grade integer, p_enrollment text)
 returns text
 language plpgsql
@@ -158,6 +177,8 @@ alter table public.announcements enable row level security;
 alter table public.classes enable row level security;
 alter table public.marks enable row level security;
 alter table public.hall_of_fame enable row level security;
+alter table public.feedback enable row level security;
+alter table public.team_members enable row level security;
 
 create or replace function public.is_admin()
 returns boolean
@@ -280,6 +301,32 @@ using (true);
 drop policy if exists "Admins manage hall of fame" on public.hall_of_fame;
 create policy "Admins manage hall of fame"
 on public.hall_of_fame
+for all
+using (public.is_admin())
+with check (public.is_admin());
+
+drop policy if exists "Public can read feedback" on public.feedback;
+create policy "Public can read feedback"
+on public.feedback
+for select
+using (true);
+
+drop policy if exists "Admins manage feedback" on public.feedback;
+create policy "Admins manage feedback"
+on public.feedback
+for all
+using (public.is_admin())
+with check (public.is_admin());
+
+drop policy if exists "Public can read team members" on public.team_members;
+create policy "Public can read team members"
+on public.team_members
+for select
+using (true);
+
+drop policy if exists "Admins manage team members" on public.team_members;
+create policy "Admins manage team members"
+on public.team_members
 for all
 using (public.is_admin())
 with check (public.is_admin());

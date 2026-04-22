@@ -6,6 +6,7 @@ export interface AuthContextValue {
   firebaseUser: User | null
   profile: UserProfile | null
   loading: boolean
+  authBusy: boolean
   loginWithGoogle: () => Promise<void>
   logout: () => Promise<void>
   refreshProfile: () => Promise<void>

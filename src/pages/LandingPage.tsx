@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { AnnouncementsTicker } from '../components/landing/AnnouncementsTicker'
 import { ClassesSection } from '../components/landing/ClassesSection'
 import { ContactSection } from '../components/landing/ContactSection'
+import { FeedbackSection } from '../components/landing/FeedbackSection'
 import { HallOfFameSection } from '../components/landing/HallOfFameSection'
 import { HeroSection } from '../components/landing/HeroSection'
 import { MissionVisionSection } from '../components/landing/MissionVisionSection'
@@ -21,13 +22,14 @@ export function LandingPage() {
       <HallOfFameSection entries={data.hallOfFame} />
       <MissionVisionSection />
       <ClassesSection classes={data.classes} />
-      <TeamSection />
+      <FeedbackSection feedback={data.feedback} />
+      <TeamSection members={data.teamMembers} />
       <AnnouncementsTicker announcements={data.announcements} />
       <ContactSection />
 
       <div className="fixed bottom-4 right-4 z-30">
         <Link
-          to={profile ? '/userdashboard' : '/landingpage#hero'}
+          to={profile ? '/userdashboard' : '/signup'}
           className="glass-panel inline-flex rounded-full px-5 py-3 text-sm font-semibold text-cyan-200 transition hover:border-cyan-300/30 hover:text-white"
         >
           {profile ? 'Open Dashboard' : 'Sign Up'}

@@ -34,6 +34,12 @@ export function useLandingData() {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'classes' }, async () => {
         if (isMounted) setData(await fetchLandingPageData())
       })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'feedback' }, async () => {
+        if (isMounted) setData(await fetchLandingPageData())
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'team_members' }, async () => {
+        if (isMounted) setData(await fetchLandingPageData())
+      })
       .subscribe()
 
     return () => {

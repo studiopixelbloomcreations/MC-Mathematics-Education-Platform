@@ -10,12 +10,14 @@ import type {
   Announcement,
   DashboardData,
   EnrollmentType,
+  FeedbackEntry,
   HallOfFameEntry,
   LandingPageData,
   Lesson,
   ManagedClass,
   MarkEntry,
   Paper,
+  TeamMember,
   UserProfile,
 } from '../types/models'
 import { hasSupabaseConfig, supabase } from './supabase'
@@ -41,7 +43,7 @@ function withFallbackIfEmpty<T>(data: T[], fallback: T[]) {
 export async function fetchLandingPageData(): Promise<LandingPageData> {
   if (!hasSupabaseConfig || !supabase) return fallbackLandingData
 
-  const [announcements, classes, hallOfFame] = await Promise.all([
+  const [announcements, classes, hallOfFame, feedback, teamMembers] = await Promise.all([
     requireTable(
       supabase
         .from('announcements')
@@ -58,6 +60,14 @@ export async function fetchLandingPageData(): Promise<LandingPageData> {
       supabase.from('hall_of_fame').select('*').order('display_order', { ascending: true }),
       fallbackLandingData.hallOfFame,
     ),
+    requireTable(
+      supabase.from('feedback').select('*'),
+      fallbackLandingData.feedback,
+    ),
+    requireTable(
+      supabase.from('team_members').select('*'),
+      fallbackLandingData.teamMembers,
+    ),
   ])
 
   return {
@@ -69,6 +79,11 @@ export async function fetchLandingPageData(): Promise<LandingPageData> {
     hallOfFame: withFallbackIfEmpty(
       hallOfFame as HallOfFameEntry[],
       fallbackLandingData.hallOfFame,
+    ),
+    feedback: withFallbackIfEmpty(feedback as FeedbackEntry[], fallbackLandingData.feedback),
+    teamMembers: withFallbackIfEmpty(
+      teamMembers as TeamMember[],
+      fallbackLandingData.teamMembers,
     ),
   }
 }
@@ -160,13 +175,15 @@ export async function fetchDashboardData(userId: string): Promise<DashboardData>
 export async function fetchAdminData(): Promise<AdminData> {
   if (!hasSupabaseConfig || !supabase) return fallbackAdminData
 
-  const [users, lessons, papers, announcements, classes, hallOfFame] = await Promise.all([
+  const [users, lessons, papers, announcements, classes, hallOfFame, feedback, teamMembers] = await Promise.all([
     requireTable(supabase.from('users').select('*').order('created_at', { ascending: false }), fallbackAdminData.users),
     requireTable(supabase.from('lessons').select('*').order('grade').order('order_index'), fallbackAdminData.lessons),
     requireTable(supabase.from('papers').select('*').order('grade').order('visible_from'), fallbackAdminData.papers),
     requireTable(supabase.from('announcements').select('*').order('created_at', { ascending: false }), fallbackAdminData.announcements),
     requireTable(supabase.from('classes').select('*').order('class_date'), fallbackAdminData.classes),
     requireTable(supabase.from('hall_of_fame').select('*').order('display_order'), fallbackAdminData.hallOfFame),
+    requireTable(supabase.from('feedback').select('*'), fallbackAdminData.feedback),
+    requireTable(supabase.from('team_members').select('*'), fallbackAdminData.teamMembers),
   ])
 
   return {
@@ -176,6 +193,8 @@ export async function fetchAdminData(): Promise<AdminData> {
     announcements: announcements as Announcement[],
     classes: classes as ManagedClass[],
     hallOfFame: hallOfFame as HallOfFameEntry[],
+    feedback: feedback as FeedbackEntry[],
+    teamMembers: teamMembers as TeamMember[],
   }
 }
 

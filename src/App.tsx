@@ -8,6 +8,12 @@ import { LoadingScreen } from './components/shared/LoadingScreen'
 const LandingPage = lazy(async () => ({
   default: (await import('./pages/LandingPage')).LandingPage,
 }))
+const LoginPage = lazy(async () => ({
+  default: (await import('./pages/LoginPage')).LoginPage,
+}))
+const SignupPage = lazy(async () => ({
+  default: (await import('./pages/SignupPage')).SignupPage,
+}))
 const UserDashboardPage = lazy(async () => ({
   default: (await import('./pages/UserDashboardPage')).UserDashboardPage,
 }))
@@ -22,6 +28,8 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Navigate to="/landingpage" replace />} />
           <Route path="/landingpage" element={<LandingPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
           <Route
             path="/userdashboard"
             element={

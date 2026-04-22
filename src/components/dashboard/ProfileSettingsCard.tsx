@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import toast from 'react-hot-toast'
 import { saveUserProfile } from '../../lib/supabaseApi'
+import { useTheme } from '../../providers/theme-context'
 import type { UserProfile } from '../../types/models'
 
 interface ProfileSettingsCardProps {
@@ -9,7 +10,7 @@ interface ProfileSettingsCardProps {
 }
 
 export function ProfileSettingsCard({ profile, onUpdated }: ProfileSettingsCardProps) {
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
+  const { theme, setTheme } = useTheme()
   const [customization, setCustomization] = useState('Neon Focus')
   const [form, setForm] = useState({
     full_name: profile.full_name ?? '',

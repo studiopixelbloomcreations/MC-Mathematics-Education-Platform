@@ -2,12 +2,14 @@ import type {
   AdminData,
   Announcement,
   DashboardData,
+  FeedbackEntry,
   HallOfFameEntry,
   LandingPageData,
   Lesson,
   ManagedClass,
   MarkEntry,
   Paper,
+  TeamMember,
   UserProfile,
 } from '../types/models'
 
@@ -65,24 +67,165 @@ export const fallbackClasses: ManagedClass[] = [
   },
 ]
 
-export const fallbackHallOfFame: HallOfFameEntry[] = [
+const hallOfFameSeed = [
+  ['A/L', 'Nethuli Jayawardena'],
+  ['A/L', 'Sahan Wickramasinghe'],
+  ['A/L', 'Tharushi Gunawardena'],
+  ['A/L', 'Ravindu Ekanayake'],
+  ['A/L', 'Kavindi Perera'],
+  ['A/L', 'Yenuli Rajapaksha'],
+  ['A/L', 'Thisara Madushan'],
+  ['A/L', 'Vihanga Senevirathna'],
+  ['A/L', 'Hansika Abeykoon'],
+  ['A/L', 'Kanishka Wijerathna'],
+  ['A/L', 'Ashani Hettiarachchi'],
+  ['A/L', 'Dulneth Fernando'],
+  ['A/L', 'Nipuni Jayasekara'],
+  ['A/L', 'Gihan Welagedara'],
+  ['A/L', 'Piumi Rathnayaka'],
+  ['A/L', 'Shavindya Pathirana'],
+  ['A/L', 'Thineth Samarasinghe'],
+  ['A/L', 'Maneesha Karunarathne'],
+  ['A/L', 'Dileesha Silva'],
+  ['A/L', 'Chamathka Jayalath'],
+  ['A/L', 'Akeesha Maduranga'],
+  ['A/L', 'Vidushi Lakmali'],
+  ['A/L', 'Imesh Thilakarathna'],
+  ['A/L', 'Sanjana Rathnasiri'],
+  ['A/L', 'Harini Senadheera'],
+  ['O/L', 'Sasindu Perera'],
+  ['O/L', 'Nethmi Bandara'],
+  ['O/L', 'Yasith Peiris'],
+  ['O/L', 'Dinara Fonseka'],
+  ['O/L', 'Pamodi Liyanage'],
+  ['O/L', 'Kusal Abeywickrama'],
+  ['O/L', 'Methuja Gunarathne'],
+  ['O/L', 'Sayumi Nawarathna'],
+  ['O/L', 'Tharuka Weerasekara'],
+  ['O/L', 'Bimansa Jayawardena'],
+  ['O/L', 'Heshani Gamage'],
+  ['O/L', 'Nirmal Rodrigo'],
+  ['O/L', 'Sachini Dharmasena'],
+  ['O/L', 'Rivinu Karunaratne'],
+  ['O/L', 'Hashini Balasuriya'],
+  ['O/L', 'Oneli Nanayakkara'],
+  ['O/L', 'Sethmina Kulathunga'],
+  ['O/L', 'Maneesha Wickramarathna'],
+  ['O/L', 'Dhanuli Wijesinghe'],
+  ['O/L', 'Keshan Dissanayake'],
+  ['O/L', 'Anagi Samarawickrama'],
+  ['O/L', 'Yasara Kuruppu'],
+  ['O/L', 'Minuri Epa'],
+  ['O/L', 'Rashen Jayasundara'],
+  ['O/L', 'Thilini Yapa'],
+] as const
+
+export const fallbackHallOfFame: HallOfFameEntry[] = hallOfFameSeed.map(([category, student_name], index) => ({
+  id: `hof-${index + 1}`,
+  category: category as 'A/L' | 'O/L',
+  student_name,
+  image_url: `https://ui-avatars.com/api/?name=${encodeURIComponent(student_name)}&background=0f172a&color=67e8f9&size=400`,
+  achievement:
+    category === 'A/L'
+      ? 'Recognized for outstanding mathematical performance and consistency.'
+      : 'Recognized for excellent O/L mathematics progress and exam readiness.',
+  display_order: index + 1,
+}))
+
+export const fallbackTeamMembers: TeamMember[] = [
   {
-    id: 'hof-1',
-    category: 'A/L',
-    student_name: 'Nethuli Jayawardena',
-    image_url:
-      'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=900&q=80',
-    achievement: 'Island rank excellence in Combined Maths foundations',
-    display_order: 1,
+    id: 'team-1',
+    name: 'Malinga C. Dissanayaka',
+    role: 'Lead Mathematics Teacher',
+    image_url: 'https://ui-avatars.com/api/?name=Malinga+C.+Dissanayaka&background=082f49&color=67e8f9&size=400',
+    bio: 'Leads lesson flow, paper strategy, and the academic direction of MC Mathematics.',
   },
   {
-    id: 'hof-2',
-    category: 'O/L',
-    student_name: 'Sasindu Perera',
-    image_url:
-      'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=80',
-    achievement: 'A grade jump through structured theory and paper coaching',
-    display_order: 2,
+    id: 'team-2',
+    name: 'Nethmi Perera',
+    role: 'Student Success Coordinator',
+    image_url: 'https://ui-avatars.com/api/?name=Nethmi+Perera&background=0f172a&color=8b5cf6&size=400',
+    bio: 'Supports parent communication, class scheduling, and onboarding logistics.',
+  },
+  {
+    id: 'team-3',
+    name: 'Ashen Fernando',
+    role: 'Paper Practice Mentor',
+    image_url: 'https://ui-avatars.com/api/?name=Ashen+Fernando&background=1e293b&color=22d3ee&size=400',
+    bio: 'Works on paper discussion sessions and structured exam-timing improvement.',
+  },
+  {
+    id: 'team-4',
+    name: 'Kavindi Silva',
+    role: 'Academic Support Executive',
+    image_url: 'https://ui-avatars.com/api/?name=Kavindi+Silva&background=172554&color=bfdbfe&size=400',
+    bio: 'Handles class support, student coordination, and follow-up on announcements.',
+  },
+  {
+    id: 'team-5',
+    name: 'Ravindu Jayasinghe',
+    role: 'Operations and Media',
+    image_url: 'https://ui-avatars.com/api/?name=Ravindu+Jayasinghe&background=312e81&color=e9d5ff&size=400',
+    bio: 'Manages digital updates, content logistics, and platform-side communication flow.',
+  },
+]
+
+export const fallbackFeedback: FeedbackEntry[] = [
+  {
+    id: 'feedback-1',
+    student_name: 'Sachini D.',
+    feedback: 'The theory explanations are clear and the paper discussions helped me improve my speed.',
+    rating: 5,
+    grade: 11,
+  },
+  {
+    id: 'feedback-2',
+    student_name: 'Keshan P.',
+    feedback: 'I started understanding maths in a much more organized way after joining MC Mathematics.',
+    rating: 5,
+    grade: 10,
+  },
+  {
+    id: 'feedback-3',
+    student_name: 'Nethuli S.',
+    feedback: 'Class schedules and announcements are easy to follow, and the lessons feel disciplined.',
+    rating: 5,
+    grade: 9,
+  },
+  {
+    id: 'feedback-4',
+    student_name: 'Thineth R.',
+    feedback: 'Paper class support made a huge difference to my confidence before exams.',
+    rating: 4,
+    grade: 11,
+  },
+  {
+    id: 'feedback-5',
+    student_name: 'Pamodi W.',
+    feedback: 'The teacher always breaks difficult ideas into steps we can actually understand.',
+    rating: 5,
+    grade: 8,
+  },
+  {
+    id: 'feedback-6',
+    student_name: 'Yasara K.',
+    feedback: 'The class atmosphere is serious but motivating. I improved my marks steadily.',
+    rating: 5,
+    grade: 10,
+  },
+  {
+    id: 'feedback-7',
+    student_name: 'Harini L.',
+    feedback: 'The explanations, revision structure, and paper practice all work together really well.',
+    rating: 5,
+    grade: 11,
+  },
+  {
+    id: 'feedback-8',
+    student_name: 'Methuja B.',
+    feedback: 'I like that we always know what lesson is current and what comes next.',
+    rating: 4,
+    grade: 7,
   },
 ]
 
@@ -186,6 +329,8 @@ export const fallbackLandingData: LandingPageData = {
   announcements: fallbackAnnouncements,
   classes: fallbackClasses,
   hallOfFame: fallbackHallOfFame,
+  feedback: fallbackFeedback,
+  teamMembers: fallbackTeamMembers,
 }
 
 export const fallbackDashboardData: DashboardData = {
@@ -204,4 +349,6 @@ export const fallbackAdminData: AdminData = {
   announcements: fallbackAnnouncements,
   classes: fallbackClasses,
   hallOfFame: fallbackHallOfFame,
+  feedback: fallbackFeedback,
+  teamMembers: fallbackTeamMembers,
 }

@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { useAuth } from '../../providers/auth-context'
 import { cn } from '../../lib/utils'
+import { ThemeToggle } from './ThemeToggle'
 
 export function TopNav() {
   const [open, setOpen] = useState(false)
@@ -35,6 +36,7 @@ export function TopNav() {
               {link.label}
             </a>
           ))}
+          <ThemeToggle />
           {profile ? (
             <>
               <NavLink to="/userdashboard" className="text-sm text-slate-200">
@@ -49,9 +51,9 @@ export function TopNav() {
             </>
           ) : (
             <div className="flex items-center gap-3">
-              <a href="#hero" className="text-sm text-slate-200 transition hover:text-white">
+              <Link to="/signup" className="text-sm text-slate-200 transition hover:text-white">
                 Sign Up
-              </a>
+              </Link>
               <button
                 onClick={() => void loginWithGoogle()}
                 className="rounded-full bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:scale-[1.02] hover:bg-cyan-300"
@@ -74,6 +76,9 @@ export function TopNav() {
       {open ? (
         <div className="glass-panel mx-auto mt-3 max-w-7xl rounded-3xl p-4 lg:hidden">
           <div className="flex flex-col gap-3">
+            <div className="mb-1 flex justify-end">
+              <ThemeToggle />
+            </div>
             {links.map((link) => (
               <a
                 key={link.href}
@@ -100,6 +105,15 @@ export function TopNav() {
             >
               {profile ? 'Log out' : 'Sign Up with Google'}
             </button>
+            {!profile ? (
+              <Link
+                to="/login"
+                onClick={() => setOpen(false)}
+                className="rounded-2xl border border-white/10 px-3 py-2 text-center text-sm text-slate-300"
+              >
+                Go to Login
+              </Link>
+            ) : null}
           </div>
         </div>
       ) : null}

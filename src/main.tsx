@@ -5,23 +5,26 @@ import { Toaster } from 'react-hot-toast'
 import App from './App'
 import './index.css'
 import { AuthProvider } from './providers/AuthProvider'
+import { ThemeProvider } from './providers/ThemeProvider'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <AuthProvider>
-        <App />
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            style: {
-              background: '#07111f',
-              border: '1px solid rgba(103, 232, 249, 0.16)',
-              color: '#e2e8f0',
-            },
-          }}
-        />
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <App />
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              style: {
+                background: '#07111f',
+                border: '1px solid rgba(103, 232, 249, 0.16)',
+                color: '#e2e8f0',
+              },
+            }}
+          />
+        </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   </StrictMode>,
 )

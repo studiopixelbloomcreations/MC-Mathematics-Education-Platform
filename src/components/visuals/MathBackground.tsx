@@ -9,6 +9,14 @@ const vectors = Array.from({ length: 10 }, (_, index) => ({
   delay: index * 0.18,
 }))
 
+const triangles = Array.from({ length: 8 }, (_, index) => ({
+  id: index,
+  size: 80 + index * 18,
+  top: `${8 + index * 10}%`,
+  left: `${index % 2 === 0 ? 6 + index * 9 : 55 + index * 3}%`,
+  delay: `${index * 0.35}s`,
+}))
+
 export function MathBackground() {
   const [mouse, setMouse] = useState({ x: 0.5, y: 0.5 })
 
@@ -34,6 +42,20 @@ export function MathBackground() {
       />
       <div className="absolute left-1/2 top-24 h-[32rem] w-[32rem] -translate-x-1/2 rounded-full bg-cyan-400/12 blur-[130px]" />
       <div className="absolute bottom-[-8rem] right-[-8rem] h-[26rem] w-[26rem] rounded-full bg-violet-500/14 blur-[120px]" />
+
+      {triangles.map((triangle) => (
+        <div
+          key={triangle.id}
+          className="triangle-drift absolute"
+          style={{
+            top: triangle.top,
+            left: triangle.left,
+            width: triangle.size,
+            height: triangle.size,
+            animationDelay: triangle.delay,
+          }}
+        />
+      ))}
 
       {vectors.map((vector) => (
         <div
