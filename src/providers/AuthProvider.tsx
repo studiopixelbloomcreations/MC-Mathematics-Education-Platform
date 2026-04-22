@@ -1,8 +1,10 @@
 import type { PropsWithChildren } from 'react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
+  getRedirectResult,
   onAuthStateChanged,
   signInWithPopup,
+  signInWithRedirect,
   signOut,
   type User,
 } from 'firebase/auth'
@@ -14,6 +16,26 @@ import { AuthContext } from './auth-context'
 
 const SIGNUP_DRAFT_KEY = 'mc-signup-draft'
 
+function describeAuthError(error: unknown) {
+  const code = typeof error === 'object' && error && 'code' in error ? String(error.code) : ''
+
+  switch (code) {
+    case 'auth/popup-blocked':
+    case 'auth/cancelled-popup-request':
+      return 'Popup sign-in was blocked, so we are redirecting you to Google instead.'
+    case 'auth/popup-closed-by-user':
+      return 'The Google sign-in popup was closed before completion.'
+    case 'auth/unauthorized-domain':
+      return `This domain is not authorized in Firebase yet. Add ${window.location.hostname} to Firebase Authentication > Settings > Authorized domains.`
+    case 'auth/operation-not-allowed':
+      return 'Google Sign-In is not enabled in your Firebase Authentication settings.'
+    case 'auth/network-request-failed':
+      return 'The network request failed during Google sign-in. Check your internet connection and try again.'
+    default:
+      return 'Google sign-in failed. Please try again.'
+  }
+}
+
 export function AuthProvider({ children }: PropsWithChildren) {
   const [firebaseUser, setFirebaseUser] = useState<User | null>(null)
   const [profile, setProfile] = useState<UserProfile | null>(null)
@@ -22,6 +44,11 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
   useEffect(() => {
     if (!hasFirebaseConfig || !auth) return
+
+    void getRedirectResult(auth).catch((error) => {
+      toast.error(describeAuthError(error))
+      setAuthBusy(false)
+    })
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setFirebaseUser(user)
@@ -96,9 +123,17 @@ export function AuthProvider({ children }: PropsWithChildren) {
       setAuthBusy(true)
       await signInWithPopup(auth, googleProvider)
       toast.success('Signed in with Google')
-    } catch {
+    } catch (error) {
+      const code = typeof error === 'object' && error && 'code' in error ? String(error.code) : ''
+
+      if (code === 'auth/popup-blocked' || code === 'auth/cancelled-popup-request') {
+        toast(describeAuthError(error))
+        await signInWithRedirect(auth, googleProvider)
+        return
+      }
+
       setAuthBusy(false)
-      toast.error('Google sign-in failed. Please try again.')
+      toast.error(describeAuthError(error))
     }
   }, [])
 
