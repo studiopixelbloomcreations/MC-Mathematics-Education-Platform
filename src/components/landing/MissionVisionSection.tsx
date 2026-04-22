@@ -16,7 +16,7 @@ export function MissionVisionSection() {
   ]
 
   return (
-    <section id="mission-vision" className="px-4 py-24 md:px-6 lg:px-8">
+    <section id="mission-vision" className="px-4 py-28 md:px-6 md:py-32 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           eyebrow="Institute DNA"
@@ -24,11 +24,11 @@ export function MissionVisionSection() {
           description="Built around smart automation and human teaching quality, MC Mathematics balances classroom rigor with a digital experience students actually want to keep using."
         />
 
-        <div className="mt-10 grid gap-6 md:grid-cols-2">
+        <div className="mt-12 grid gap-7 md:grid-cols-2">
           {cards.map((card) => {
             const Icon = card.icon
             return (
-              <article key={card.title} className="glass-panel rounded-[2rem] p-8">
+              <article key={card.title} className="glass-panel rounded-[2rem] p-9">
                 <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-400/10 text-cyan-200">
                   <Icon size={24} />
                 </div>

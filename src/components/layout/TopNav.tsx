@@ -21,8 +21,8 @@ export function TopNav() {
   ]
 
   return (
-    <header className="sticky top-0 z-40 mx-auto w-full px-4 pt-4 md:px-6 lg:px-8">
-      <div className="glass-panel accent-border mx-auto flex max-w-7xl items-center justify-between rounded-full px-5 py-3">
+    <header className="sticky top-0 z-40 mx-auto w-full px-4 pt-5 md:px-6 lg:px-8">
+      <div className="glass-panel accent-border mx-auto flex max-w-7xl items-center justify-between rounded-full px-6 py-4 md:px-7">
         <Link to="/landingpage" className="flex items-center gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-cyan-400/10 text-cyan-300 accent-border">
             <span className="font-display text-lg font-bold">MC</span>
@@ -33,7 +33,7 @@ export function TopNav() {
           </div>
         </Link>
 
-        <nav className="hidden items-center gap-5 lg:flex">
+        <nav className="hidden items-center gap-6 xl:gap-7 lg:flex">
           {links.map((link) => (
             <a key={link.href} href={link.href} className="text-sm text-slate-300 transition hover:text-white">
               {link.label}

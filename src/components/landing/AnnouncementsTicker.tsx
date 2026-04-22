@@ -9,8 +9,8 @@ export function AnnouncementsTicker({ announcements }: AnnouncementsTickerProps)
   const track = [...announcements, ...announcements]
 
   return (
-    <section id="announcements" className="px-4 py-24 md:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl overflow-hidden rounded-[2rem] border border-cyan-400/18 bg-slate-950/50 px-6 py-6">
+    <section id="announcements" className="px-4 py-28 md:px-6 md:py-32 lg:px-8">
+      <div className="mx-auto max-w-7xl overflow-hidden rounded-[2rem] border border-cyan-400/18 bg-slate-950/50 px-7 py-7">
         <div className="mb-4 flex items-center justify-between gap-4">
           <div>
             <p className="text-xs uppercase tracking-[0.28em] text-cyan-300/70">Announcements</p>
@@ -23,11 +23,11 @@ export function AnnouncementsTicker({ announcements }: AnnouncementsTickerProps)
 
         {announcements.length ? (
           <div className="overflow-hidden">
-            <div className="ticker-track flex min-w-max gap-4">
+            <div className="ticker-track flex min-w-max gap-5">
               {track.map((announcement, index) => (
                 <article
                   key={`${announcement.id}-${index}`}
-                  className="min-w-[300px] rounded-[1.6rem] border border-white/8 bg-white/[0.03] p-5 md:min-w-[420px]"
+                  className="min-w-[320px] rounded-[1.6rem] border border-white/8 bg-white/[0.03] p-6 md:min-w-[440px]"
                 >
                   <p className="font-display text-lg font-semibold text-white">{announcement.title}</p>
                   <p className="mt-3 text-sm leading-7 text-slate-300">{announcement.body}</p>

@@ -7,7 +7,7 @@ interface TeamSectionProps {
 
 export function TeamSection({ members }: TeamSectionProps) {
   return (
-    <section id="team" className="px-4 py-28 md:px-6 lg:px-8">
+    <section id="team" className="px-4 py-28 md:px-6 md:py-32 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           eyebrow="Team"
@@ -15,11 +15,11 @@ export function TeamSection({ members }: TeamSectionProps) {
           description="A focused academic and operations team supporting lesson quality, class delivery, student coordination, and digital updates around the institute."
         />
 
-        <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-12 grid gap-7 md:grid-cols-2 xl:grid-cols-3">
           {members.map((member) => (
             <article
               key={member.id}
-              className="glass-panel group rounded-[2rem] p-5 transition duration-500 hover:-translate-y-2 hover:shadow-[0_24px_60px_rgba(34,211,238,0.14)]"
+              className="glass-panel group rounded-[2rem] p-7 transition duration-500 hover:-translate-y-2 hover:shadow-[0_24px_60px_rgba(34,211,238,0.14)]"
             >
               <div className="overflow-hidden rounded-[1.6rem] border border-white/8 bg-slate-950/45">
                 <img

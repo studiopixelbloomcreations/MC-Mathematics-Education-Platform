@@ -9,7 +9,7 @@ interface FeedbackSectionProps {
 
 export function FeedbackSection({ feedback }: FeedbackSectionProps) {
   return (
-    <section id="feedback" className="px-4 py-28 md:px-6 lg:px-8">
+    <section id="feedback" className="px-4 py-28 md:px-6 md:py-32 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           eyebrow="Student Feedback"
@@ -18,9 +18,9 @@ export function FeedbackSection({ feedback }: FeedbackSectionProps) {
         />
 
         {feedback.length ? (
-          <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-12 grid gap-7 md:grid-cols-2 xl:grid-cols-4">
             {feedback.map((item) => (
-              <article key={item.id} className="glass-panel rounded-[2rem] p-6 transition duration-500 hover:-translate-y-1">
+              <article key={item.id} className="glass-panel rounded-[2rem] p-8 transition duration-500 hover:-translate-y-1">
                 <div className="flex items-center justify-between">
                   <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-cyan-400/10 text-cyan-200">
                     <Quote size={18} />

@@ -4,9 +4,9 @@ import heroAsset from '../../assets/hero.png'
 
 export function HeroSection() {
   return (
-    <section id="hero" className="relative px-4 pb-16 pt-10 md:px-6 lg:px-8">
-      <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[1.15fr_0.85fr]">
-        <div className="space-y-8">
+    <section id="hero" className="relative px-4 pb-24 pt-16 md:px-6 md:pb-28 lg:px-8 lg:pt-20">
+      <div className="mx-auto grid max-w-7xl items-center gap-14 lg:grid-cols-[1.15fr_0.85fr] xl:gap-18">
+        <div className="space-y-10 md:space-y-12">
           <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/6 px-4 py-2 text-sm text-cyan-200">
             <Sparkles size={16} />
             Premium mathematics coaching for Grades 6 to 11
@@ -26,7 +26,7 @@ export function HeroSection() {
             </p>
           </div>
 
-          <div className="flex flex-col gap-4 sm:flex-row">
+          <div className="flex flex-col gap-5 sm:flex-row">
             <Link
               to="/login"
               className="glass-button inline-flex items-center justify-center gap-2 px-6 py-3 font-semibold text-slate-950"
@@ -42,13 +42,13 @@ export function HeroSection() {
             </a>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-5 sm:grid-cols-3">
             {[
               ['Grades 6-11', 'Structured pathways'],
               ['Realtime updates', 'Announcements and classes'],
               ['Performance insight', 'Marks, lessons, paper progress'],
             ].map(([title, note]) => (
-              <div key={title} className="glass-panel rounded-3xl p-5">
+              <div key={title} className="glass-panel rounded-3xl p-6">
                 <p className="font-display text-xl font-semibold text-white">{title}</p>
                 <p className="mt-2 text-sm leading-6 text-slate-400">{note}</p>
               </div>
@@ -56,12 +56,12 @@ export function HeroSection() {
           </div>
         </div>
 
-        <div className="glass-panel accent-border relative overflow-hidden rounded-[2rem] p-6">
+        <div className="glass-panel accent-border relative overflow-hidden rounded-[2.25rem] p-7 md:p-8">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(103,232,249,0.18),transparent_35%),radial-gradient(circle_at_bottom_left,rgba(139,92,246,0.16),transparent_40%)]" />
           <div className="absolute -right-10 top-16 h-40 w-40 rounded-full bg-cyan-400/10 blur-3xl" />
-          <div className="relative space-y-6">
-            <div className="grid gap-6 md:grid-cols-[0.9fr_1.1fr]">
-              <div className="rounded-[1.8rem] border border-white/8 bg-slate-950/55 p-5">
+          <div className="relative space-y-7 md:space-y-8">
+            <div className="grid gap-7 md:grid-cols-[0.9fr_1.1fr]">
+              <div className="rounded-[1.8rem] border border-white/8 bg-slate-950/55 p-6">
                 <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-400/10 text-cyan-200">
                   <img src={heroAsset} alt="Mathematics visual" className="h-10 w-10 object-contain" />
                 </div>
@@ -72,13 +72,13 @@ export function HeroSection() {
                 </p>
               </div>
 
-              <div className="grid gap-4">
+              <div className="grid gap-5">
                 {[
                   ['Class Stream', 'Theory + Paper'],
                   ['Grades', '6 to 11'],
                   ['Mode', 'Hall + Online support'],
                 ].map(([title, value]) => (
-                  <div key={title} className="rounded-3xl border border-white/6 bg-slate-950/40 p-4">
+                  <div key={title} className="rounded-3xl border border-white/6 bg-slate-950/40 p-5">
                     <p className="text-xs uppercase tracking-[0.24em] text-slate-500">{title}</p>
                     <p className="mt-3 font-display text-2xl font-semibold text-white">{value}</p>
                   </div>
@@ -86,8 +86,8 @@ export function HeroSection() {
               </div>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="rounded-[1.75rem] border border-cyan-400/12 bg-slate-950/55 p-5">
+            <div className="grid gap-5 md:grid-cols-2">
+              <div className="rounded-[1.75rem] border border-cyan-400/12 bg-slate-950/55 p-6">
                 <div className="flex items-center gap-3">
                   <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-cyan-400/10 text-cyan-200">
                     <BookOpen size={20} />
@@ -103,7 +103,7 @@ export function HeroSection() {
                 </p>
               </div>
 
-              <div className="rounded-[1.75rem] border border-cyan-400/12 bg-slate-950/55 p-5">
+              <div className="rounded-[1.75rem] border border-cyan-400/12 bg-slate-950/55 p-6">
                 <div className="flex items-center gap-3">
                   <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-cyan-400/10 text-cyan-200">
                     <MapPin size={20} />

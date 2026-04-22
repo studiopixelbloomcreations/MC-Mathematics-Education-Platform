@@ -39,7 +39,7 @@ export function ClassesSection({ classes }: ClassesSectionProps) {
   }, [classes])
 
   return (
-    <section id="classes" className="px-4 py-24 md:px-6 lg:px-8">
+    <section id="classes" className="px-4 py-28 md:px-6 md:py-32 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           eyebrow="Schedules"
@@ -48,15 +48,19 @@ export function ClassesSection({ classes }: ClassesSectionProps) {
         />
 
         {schedules.length ? (
-          <div className="mt-10 grid gap-6 lg:grid-cols-2">
+          <div className="mt-12 grid gap-7 lg:grid-cols-2">
             {schedules.map((item) => (
-              <article key={`${item.class_name}-${item.weekdayLabel}-${item.time_label ?? 'tba'}`} className="glass-panel rounded-[2rem] p-6">
+              <article
+                key={`${item.class_name}-${item.weekdayLabel}-${item.time_label ?? 'tba'}`}
+                className="glass-panel rounded-[2rem] p-7"
+              >
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="text-xs uppercase tracking-[0.22em] text-slate-500">Grade {item.grade}</p>
                     <h3 className="font-display mt-2 text-2xl font-semibold text-white">{item.class_name}</h3>
                     <p className="mt-4 text-base font-medium text-cyan-200">
-                      {item.weekdayLabel} {item.time_label ? `• ${item.time_label}` : ''}
+                      {item.weekdayLabel}
+                      {item.time_label ? ` | ${item.time_label}` : ''}
                     </p>
                     <p className="mt-2 text-sm text-slate-400">{item.venue ?? 'Lexicon Kurunegala'}</p>
                   </div>
