@@ -15,8 +15,8 @@ export function TeamSection({ members }: TeamSectionProps) {
           description="A focused academic and operations team supporting lesson quality, class delivery, student coordination, and digital updates around the institute."
         />
 
-        <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-5">
-          {members.slice(0, 5).map((member) => (
+        <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {members.map((member) => (
             <article
               key={member.id}
               className="glass-panel group rounded-[2rem] p-5 transition duration-500 hover:-translate-y-2 hover:shadow-[0_24px_60px_rgba(34,211,238,0.14)]"
