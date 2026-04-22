@@ -3,6 +3,7 @@ export type UserRole = 'student' | 'admin'
 export type LessonStatus = 'completed' | 'ongoing' | 'not_started'
 export type PaperStatus = 'completed' | 'upcoming'
 export type ClassStatus = 'ongoing' | 'completed' | 'cancelled'
+export type ClassDisplayStatus = 'upcoming' | 'ongoing' | 'completed' | 'cancelled'
 export type ClassAudience = 'group' | 'whole'
 export type HallOfFameCategory = 'A/L' | 'O/L'
 export type ThemeMode = 'dark' | 'light'
@@ -102,6 +103,7 @@ export interface ManagedClass {
   status: ClassStatus
   venue: string | null
   time_label: string | null
+  end_time: string | null
 }
 
 export interface MarkEntry {

@@ -8,6 +8,12 @@ export function useAdminData() {
   const [data, setData] = useState<AdminData>(fallbackAdminData)
   const [loading, setLoading] = useState(true)
 
+  async function refresh() {
+    const payload = await fetchAdminData()
+    setData(payload)
+    return payload
+  }
+
   useEffect(() => {
     let isMounted = true
 
@@ -45,5 +51,5 @@ export function useAdminData() {
     }
   }, [])
 
-  return { data, loading }
+  return { data, loading, refresh, setData }
 }

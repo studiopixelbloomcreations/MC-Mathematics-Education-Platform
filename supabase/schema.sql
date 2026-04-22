@@ -81,8 +81,47 @@ create table if not exists public.classes (
   status text not null check (status in ('ongoing', 'completed', 'cancelled')),
   venue text,
   time_label text,
+  end_time time,
   created_at timestamptz not null default timezone('utc', now())
 );
+
+create table if not exists public.class_templates (
+  id text primary key,
+  class_name text not null,
+  grade integer not null references public.grades (grade) on delete cascade,
+  type text not null check (type in ('group', 'whole')),
+  weekday integer not null check (weekday between 0 and 6),
+  weekday_label text not null,
+  start_time time not null,
+  end_time time not null,
+  time_label text not null,
+  venue text,
+  created_at timestamptz not null default timezone('utc', now())
+);
+
+insert into public.class_templates (id, class_name, grade, type, weekday, weekday_label, start_time, end_time, time_label, venue)
+values
+  ('g10-theory', 'Grade 10 Theory Class', 10, 'whole', 2, 'Tuesday', '17:30', '20:30', '5:30 PM - 8:30 PM', 'MC Campus'),
+  ('g8-whole', 'Grade 8 Whole Class', 8, 'whole', 2, 'Tuesday', '14:30', '17:15', '2:30 PM - 5:15 PM', 'MC Campus'),
+  ('g9-whole', 'Grade 9 Whole Class', 9, 'whole', 3, 'Wednesday', '14:30', '17:15', '2:30 PM - 5:15 PM', 'MC Campus'),
+  ('g9-group', 'Grade 9 Group Class', 9, 'group', 3, 'Wednesday', '17:30', '20:30', '5:30 PM - 8:30 PM', 'MC Campus'),
+  ('g7-whole', 'Grade 7 Whole Class', 7, 'whole', 4, 'Thursday', '14:30', '17:15', '2:30 PM - 5:15 PM', 'MC Campus'),
+  ('g11-group', 'Grade 11 Group Class', 11, 'group', 4, 'Thursday', '17:30', '21:00', '5:30 PM - 9:00 PM', 'MC Campus'),
+  ('g6-whole', 'Grade 6 Whole Class', 6, 'whole', 5, 'Friday', '14:30', '17:15', '2:30 PM - 5:15 PM', 'MC Campus'),
+  ('g8-group', 'Grade 8 Group Class', 8, 'group', 5, 'Friday', '17:30', '19:30', '5:30 PM - 7:30 PM', 'MC Campus'),
+  ('g11-whole', 'Grade 11 Whole Class', 11, 'whole', 6, 'Saturday', '07:30', '12:00', '7:30 AM - 12:00 PM', 'MC Campus'),
+  ('g10-whole', 'Grade 10 Whole Class', 10, 'whole', 6, 'Saturday', '13:00', '17:00', '1:00 PM - 5:00 PM', 'MC Campus')
+on conflict (id) do update
+set
+  class_name = excluded.class_name,
+  grade = excluded.grade,
+  type = excluded.type,
+  weekday = excluded.weekday,
+  weekday_label = excluded.weekday_label,
+  start_time = excluded.start_time,
+  end_time = excluded.end_time,
+  time_label = excluded.time_label,
+  venue = excluded.venue;
 
 create table if not exists public.marks (
   id uuid primary key default gen_random_uuid(),
@@ -164,11 +203,56 @@ begin
 end;
 $$;
 
+create or replace function public.sync_monthly_classes(p_month date default timezone('utc', now())::date)
+returns integer
+language plpgsql
+security definer
+as $$
+declare
+  month_start date := date_trunc('month', p_month)::date;
+  month_end date := (date_trunc('month', p_month) + interval '1 month')::date;
+  inserted_rows integer := 0;
+begin
+  insert into public.classes (class_name, class_date, grade, type, status, venue, time_label, end_time)
+  select
+    template.class_name,
+    make_timestamptz(
+      extract(year from schedule.day)::integer,
+      extract(month from schedule.day)::integer,
+      extract(day from schedule.day)::integer,
+      extract(hour from template.start_time)::integer,
+      extract(minute from template.start_time)::integer,
+      0,
+      'Asia/Colombo'
+    ),
+    template.grade,
+    template.type,
+    'ongoing',
+    template.venue,
+    template.time_label,
+    template.end_time
+  from public.class_templates as template
+  join generate_series(month_start, month_end - interval '1 day', interval '1 day') as schedule(day)
+    on extract(dow from schedule.day) = template.weekday
+  on conflict (class_name, grade, type, class_date)
+  do update set
+    venue = excluded.venue,
+    time_label = excluded.time_label,
+    end_time = excluded.end_time;
+
+  get diagnostics inserted_rows = row_count;
+  return inserted_rows;
+end;
+$$;
+
 drop trigger if exists users_set_updated_at on public.users;
 create trigger users_set_updated_at
 before update on public.users
 for each row
 execute procedure public.set_updated_at();
+
+alter table public.classes
+add column if not exists end_time time;
 
 update public.classes
 set status = 'ongoing'
@@ -181,11 +265,23 @@ alter table public.classes
 add constraint classes_status_check
 check (status in ('ongoing', 'completed', 'cancelled'));
 
+create unique index if not exists classes_unique_schedule_idx
+on public.classes (class_name, grade, type, class_date);
+
+update public.classes as class_item
+set end_time = template.end_time
+from public.class_templates as template
+where class_item.end_time is null
+  and class_item.class_name = template.class_name
+  and class_item.grade = template.grade
+  and class_item.type = template.type;
+
 alter table public.users enable row level security;
 alter table public.lessons enable row level security;
 alter table public.papers enable row level security;
 alter table public.announcements enable row level security;
 alter table public.classes enable row level security;
+alter table public.class_templates enable row level security;
 alter table public.marks enable row level security;
 alter table public.hall_of_fame enable row level security;
 alter table public.feedback enable row level security;
@@ -283,6 +379,19 @@ using (true);
 drop policy if exists "Admins manage classes" on public.classes;
 create policy "Admins manage classes"
 on public.classes
+for all
+using (public.is_admin())
+with check (public.is_admin());
+
+drop policy if exists "Public can read class templates" on public.class_templates;
+create policy "Public can read class templates"
+on public.class_templates
+for select
+using (true);
+
+drop policy if exists "Admins manage class templates" on public.class_templates;
+create policy "Admins manage class templates"
+on public.class_templates
 for all
 using (public.is_admin())
 with check (public.is_admin());

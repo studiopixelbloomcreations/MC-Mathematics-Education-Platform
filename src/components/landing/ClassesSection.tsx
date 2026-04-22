@@ -1,4 +1,6 @@
 import { format } from 'date-fns'
+import { useCurrentTime } from '../../hooks/useCurrentTime'
+import { formatClassStatusLabel, getComputedClassStatus, getClassStatusTone } from '../../lib/utils'
 import { SectionHeading } from '../layout/SectionHeading'
 import { EmptyState } from '../shared/EmptyState'
 import { StatusPill } from '../shared/StatusPill'
@@ -9,6 +11,8 @@ interface ClassesSectionProps {
 }
 
 export function ClassesSection({ classes }: ClassesSectionProps) {
+  const now = useCurrentTime()
+
   return (
     <section id="classes" className="px-4 py-24 md:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
@@ -27,7 +31,10 @@ export function ClassesSection({ classes }: ClassesSectionProps) {
                     <p className="text-xs uppercase tracking-[0.22em] text-slate-500">Grade {item.grade}</p>
                     <h3 className="font-display mt-2 text-2xl font-semibold text-white">{item.class_name}</h3>
                   </div>
-                  <StatusPill label={item.status} tone={item.status === 'cancelled' ? 'danger' : 'info'} />
+                  <StatusPill
+                    label={formatClassStatusLabel(getComputedClassStatus(item, now))}
+                    tone={getClassStatusTone(getComputedClassStatus(item, now))}
+                  />
                 </div>
                 <div className="mt-6 grid gap-4 sm:grid-cols-3">
                   <div className="rounded-2xl bg-white/[0.03] p-4">

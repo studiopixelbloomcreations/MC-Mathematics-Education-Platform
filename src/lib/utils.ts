@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import type { EnrollmentType, Lesson, ManagedClass, Paper } from '../types/models'
+import type { ClassDisplayStatus, EnrollmentType, Lesson, ManagedClass, Paper } from '../types/models'
 
 export function cn(...values: Array<string | false | null | undefined>) {
   return clsx(values)
@@ -75,6 +75,48 @@ export function sortClassesByDate(classes: ManagedClass[]) {
     (first, second) =>
       new Date(first.class_date).getTime() - new Date(second.class_date).getTime(),
   )
+}
+
+function parseTimeParts(value: string | null | undefined) {
+  if (!value) return null
+  const [hoursText, minutesText] = value.split(':')
+  const hours = Number(hoursText)
+  const minutes = Number(minutesText)
+  if (Number.isNaN(hours) || Number.isNaN(minutes)) return null
+  return { hours, minutes }
+}
+
+export function getClassEndDate(item: ManagedClass) {
+  const start = new Date(item.class_date)
+  const parsed = parseTimeParts(item.end_time)
+  if (!parsed) return start
+
+  const end = new Date(start)
+  end.setHours(parsed.hours, parsed.minutes, 0, 0)
+  return end
+}
+
+export function getComputedClassStatus(item: ManagedClass, now = new Date()): ClassDisplayStatus {
+  if (item.status === 'cancelled') return 'cancelled'
+  if (item.status === 'completed') return 'completed'
+
+  const start = new Date(item.class_date)
+  const end = getClassEndDate(item)
+
+  if (now.getTime() < start.getTime()) return 'upcoming'
+  if (now.getTime() >= start.getTime() && now.getTime() < end.getTime()) return 'ongoing'
+  return 'completed'
+}
+
+export function getClassStatusTone(status: ClassDisplayStatus) {
+  if (status === 'completed') return 'success'
+  if (status === 'cancelled') return 'danger'
+  if (status === 'upcoming') return 'muted'
+  return 'info'
+}
+
+export function formatClassStatusLabel(status: ClassDisplayStatus) {
+  return status.charAt(0).toUpperCase() + status.slice(1)
 }
 
 export function prefixForEnrollment(type: EnrollmentType) {

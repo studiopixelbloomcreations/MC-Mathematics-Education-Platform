@@ -1,5 +1,5 @@
 import type { User as FirebaseUser } from 'firebase/auth'
-import { buildMonthlyClasses, getClassTemplateById, getMonthRange } from '../data/classes'
+import { buildMonthlyClasses, getClassTemplateById, getMonthRange, getMonthValue } from '../data/classes'
 import {
   fallbackAdminData,
   fallbackDashboardData,
@@ -59,6 +59,22 @@ function normalizeManagedClasses(
   items: Array<ManagedClass | (Omit<ManagedClass, 'status'> & { status: DatabaseClassStatus })>,
 ) {
   return items.map((item) => normalizeManagedClass(item))
+}
+
+async function syncMonthlyClasses(monthValue = getMonthValue()) {
+  if (!hasSupabaseConfig || !supabase) return
+
+  const { error } = await supabase.rpc('sync_monthly_classes', {
+    p_month: `${monthValue}-01`,
+  })
+
+  if (error) {
+    const functionMissing =
+      error.message.toLowerCase().includes('function') ||
+      error.message.toLowerCase().includes('does not exist')
+
+    if (!functionMissing) throw error
+  }
 }
 
 async function insertClassesWithCompatibility(classes: Array<Omit<ManagedClass, 'id'>>) {
@@ -131,6 +147,12 @@ async function updateClassStatusWithCompatibility(classId: string, status: Manag
 
 export async function fetchLandingPageData(): Promise<LandingPageData> {
   if (!hasSupabaseConfig || !supabase) return fallbackLandingData
+
+  try {
+    await syncMonthlyClasses()
+  } catch (error) {
+    console.warn('Monthly class sync skipped for landing data.', error)
+  }
 
   const [announcements, classes, hallOfFame, feedback, teamMembers] = await Promise.all([
     requireTable(
@@ -221,6 +243,12 @@ export async function syncFirebaseUser(firebaseUser: FirebaseUser): Promise<User
 export async function fetchDashboardData(userId: string): Promise<DashboardData> {
   if (!hasSupabaseConfig || !supabase) return fallbackDashboardData
 
+  try {
+    await syncMonthlyClasses()
+  } catch (error) {
+    console.warn('Monthly class sync skipped for dashboard data.', error)
+  }
+
   const profile = await requireTable(
     supabase.from('users').select('*').eq('user_id', userId).single(),
     fallbackDashboardData.profile,
@@ -266,6 +294,12 @@ export async function fetchDashboardData(userId: string): Promise<DashboardData>
 
 export async function fetchAdminData(): Promise<AdminData> {
   if (!hasSupabaseConfig || !supabase) return fallbackAdminData
+
+  try {
+    await syncMonthlyClasses()
+  } catch (error) {
+    console.warn('Monthly class sync skipped for admin data.', error)
+  }
 
   const [users, lessons, papers, announcements, classes, hallOfFame, feedback, teamMembers] = await Promise.all([
     requireTable(supabase.from('users').select('*').order('created_at', { ascending: false }), fallbackAdminData.users),
@@ -400,6 +434,10 @@ export async function generateMonthlyClasses(payload: {
 export async function updateClassStatus(classId: string, status: ManagedClass['status']) {
   if (!hasSupabaseConfig || !supabase) return null
   return updateClassStatusWithCompatibility(classId, status)
+}
+
+export async function ensureCurrentMonthClasses(monthValue = getMonthValue()) {
+  await syncMonthlyClasses(monthValue)
 }
 
 export async function resetDashboardTestingData() {

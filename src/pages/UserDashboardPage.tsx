@@ -8,12 +8,16 @@ import { ParentLockCard } from '../components/dashboard/ParentLockCard'
 import { ProfileSettingsCard } from '../components/dashboard/ProfileSettingsCard'
 import { EmptyState } from '../components/shared/EmptyState'
 import { StatusPill } from '../components/shared/StatusPill'
+import { useCurrentTime } from '../hooks/useCurrentTime'
 import { useDashboardData } from '../hooks/useDashboardData'
 import {
   calculateTheoryCoverage,
+  formatClassStatusLabel,
   formatEnrollmentLabel,
   getCurrentPaper,
   getPaperLinks,
+  getComputedClassStatus,
+  getClassStatusTone,
   getCurrentTheoryLesson,
   getLatestMark,
   sortClassesByDate,
@@ -35,6 +39,7 @@ export function UserDashboardPage() {
   const { firebaseUser, logout } = useAuth()
   const [activeSection, setActiveSection] = useState('overview')
   const { data, setData } = useDashboardData(firebaseUser?.uid)
+  const now = useCurrentTime()
 
   const sortedClasses = useMemo(() => sortClassesByDate(data.classes), [data.classes])
   const coverage = calculateTheoryCoverage(data.lessons)
@@ -212,14 +217,8 @@ export function UserDashboardPage() {
                   <h3 className="font-display mt-2 text-2xl font-semibold text-white">{item.class_name}</h3>
                 </div>
                 <StatusPill
-                  label={item.status}
-                  tone={
-                    item.status === 'completed'
-                      ? 'success'
-                      : item.status === 'cancelled'
-                        ? 'danger'
-                        : 'info'
-                  }
+                  label={formatClassStatusLabel(getComputedClassStatus(item, now))}
+                  tone={getClassStatusTone(getComputedClassStatus(item, now))}
                 />
               </div>
               <div className="mt-5 grid gap-4 md:grid-cols-3">

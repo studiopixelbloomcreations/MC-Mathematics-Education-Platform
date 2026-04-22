@@ -187,6 +187,7 @@ export function buildMonthlyClasses({
       status,
       venue: venue?.trim() || template.venue,
       time_label: template.time_label,
+      end_time: template.end_time,
     })
   }
 

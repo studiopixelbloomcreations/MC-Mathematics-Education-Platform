@@ -5,21 +5,23 @@ import toast from 'react-hot-toast'
 import { AdminFormCard } from '../components/admin/AdminFormCard'
 import { StatusPill } from '../components/shared/StatusPill'
 import { classTemplates, getMonthValue } from '../data/classes'
+import { useCurrentTime } from '../hooks/useCurrentTime'
 import { useAdminData } from '../hooks/useAdminData'
 import {
   createAnnouncement,
   createLesson,
   createMark,
   createPaper,
+  ensureCurrentMonthClasses,
   generateMonthlyClasses,
   resetDashboardTestingData,
   saveUserProfile,
   updateClassStatus,
 } from '../lib/supabaseApi'
+import { formatClassStatusLabel, getComputedClassStatus, getClassStatusTone } from '../lib/utils'
 import type { ClassStatus, LessonStatus, PaperStatus } from '../types/models'
 
 const tabs = ['overview', 'lessons', 'papers', 'announcements', 'users', 'classes'] as const
-const classStatusOptions: ClassStatus[] = ['ongoing', 'completed', 'cancelled']
 
 export function AdminPanelPage() {
   const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>('overview')
@@ -27,7 +29,8 @@ export function AdminPanelPage() {
   const [scheduleMonth, setScheduleMonth] = useState(getMonthValue())
   const [isResetting, setIsResetting] = useState(false)
   const [isGeneratingSchedule, setIsGeneratingSchedule] = useState(false)
-  const { data } = useAdminData()
+  const { data, refresh } = useAdminData()
+  const now = useCurrentTime()
 
   const filteredUsers = useMemo(() => {
     return data.users.filter((user) =>
@@ -104,6 +107,7 @@ export function AdminPanelPage() {
 
     try {
       setIsGeneratingSchedule(true)
+      await ensureCurrentMonthClasses(monthValue)
       const generated = await generateMonthlyClasses({
         templateId,
         monthValue,
@@ -112,6 +116,7 @@ export function AdminPanelPage() {
       })
 
       setScheduleMonth(monthValue)
+      await refresh()
       toast.success(`${generated.length} ${template.class_name} dates generated for ${monthValue}`)
     } catch (error) {
       toast.error(getErrorMessage(error, 'Full month schedule could not be generated'))
@@ -140,6 +145,7 @@ export function AdminPanelPage() {
   async function handleClassStatusChange(classId: string, status: ClassStatus) {
     try {
       await updateClassStatus(classId, status)
+      await refresh()
       toast.success(`Class marked as ${status}`)
     } catch (error) {
       toast.error(getErrorMessage(error, `Class status could not be changed to ${status}`))
@@ -425,14 +431,24 @@ export function AdminPanelPage() {
                               <p className="mt-1 text-sm text-slate-400">
                                 {format(new Date(item.class_date), 'EEEE, PPP')} · {item.time_label ?? 'TBA'} · Grade {item.grade}
                               </p>
+                              <div className="mt-3">
+                                <StatusPill
+                                  label={formatClassStatusLabel(getComputedClassStatus(item, now))}
+                                  tone={getClassStatusTone(getComputedClassStatus(item, now))}
+                                />
+                              </div>
                             </div>
                             <div className="min-w-40">
                               <Select
-                                label="Status"
+                                label="Manual Override"
                                 name={`status-${item.id}`}
                                 value={item.status}
                                 onChange={(event) => void handleClassStatusChange(item.id, event.target.value as ClassStatus)}
-                                options={classStatusOptions.map((status) => [status, toTitleCase(status)])}
+                                options={[
+                                  ['ongoing', 'Automatic / Active'],
+                                  ['completed', 'Completed'],
+                                  ['cancelled', 'Cancelled'],
+                                ]}
                               />
                             </div>
                           </div>
@@ -605,10 +621,6 @@ function SubmitButton({
       </button>
     </div>
   )
-}
-
-function toTitleCase(value: string) {
-  return value.charAt(0).toUpperCase() + value.slice(1)
 }
 
 function getErrorMessage(error: unknown, fallback: string) {
