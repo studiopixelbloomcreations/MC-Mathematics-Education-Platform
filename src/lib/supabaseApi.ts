@@ -1,4 +1,5 @@
 import type { User as FirebaseUser } from 'firebase/auth'
+import { buildMonthlyClasses, getClassTemplateById, getMonthRange } from '../data/classes'
 import {
   fallbackAdminData,
   fallbackDashboardData,
@@ -262,6 +263,85 @@ export async function createClass(payload: Omit<ManagedClass, 'id'>) {
   if (!hasSupabaseConfig || !supabase) return null
   const { data } = await supabase.from('classes').insert(payload).select('*').single()
   return data as ManagedClass | null
+}
+
+export async function generateMonthlyClasses(payload: {
+  templateId: string
+  monthValue: string
+  status: ManagedClass['status']
+  venue?: string | null
+}) {
+  const template = getClassTemplateById(payload.templateId)
+  if (!template) {
+    throw new Error('Selected class template could not be found.')
+  }
+
+  const generatedClasses = buildMonthlyClasses({
+    template,
+    monthValue: payload.monthValue,
+    status: payload.status,
+    venue: payload.venue,
+  })
+
+  if (!hasSupabaseConfig || !supabase) {
+    return generatedClasses.map((item, index) => ({
+      ...item,
+      id: `${template.id}-${payload.monthValue}-${index + 1}`,
+    })) as ManagedClass[]
+  }
+
+  const { start_iso, end_iso } = getMonthRange(payload.monthValue)
+
+  const { error: deleteError } = await supabase
+    .from('classes')
+    .delete()
+    .eq('class_name', template.class_name)
+    .eq('grade', template.grade)
+    .eq('type', template.type)
+    .gte('class_date', start_iso)
+    .lt('class_date', end_iso)
+
+  if (deleteError) throw deleteError
+
+  const { data, error } = await supabase.from('classes').insert(generatedClasses).select('*')
+  if (error) throw error
+  return (data ?? []) as ManagedClass[]
+}
+
+export async function updateClassStatus(classId: string, status: ManagedClass['status']) {
+  if (!hasSupabaseConfig || !supabase) return null
+  const { data, error } = await supabase
+    .from('classes')
+    .update({ status })
+    .eq('id', classId)
+    .select('*')
+    .single()
+
+  if (error) throw error
+  return data as ManagedClass | null
+}
+
+export async function resetDashboardTestingData() {
+  if (!hasSupabaseConfig || !supabase) return
+
+  const operations = await Promise.all([
+    supabase.from('marks').delete().not('id', 'is', null),
+    supabase.from('lessons').delete().not('id', 'is', null),
+    supabase.from('papers').delete().not('id', 'is', null),
+    supabase.from('announcements').delete().not('id', 'is', null),
+    supabase.from('classes').delete().not('id', 'is', null),
+    supabase
+      .from('users')
+      .update({
+        special_note: null,
+        parent_lock_password: null,
+        parent_lock_until: null,
+      })
+      .eq('role', 'student'),
+  ])
+
+  const firstError = operations.find((result) => result.error)?.error
+  if (firstError) throw firstError
 }
 
 export async function createPaper(payload: Omit<Paper, 'id'>) {

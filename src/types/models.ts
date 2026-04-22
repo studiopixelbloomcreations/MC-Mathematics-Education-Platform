@@ -2,10 +2,23 @@ export type EnrollmentType = 'theory' | 'paper' | 'both'
 export type UserRole = 'student' | 'admin'
 export type LessonStatus = 'completed' | 'ongoing' | 'not_started'
 export type PaperStatus = 'completed' | 'upcoming'
-export type ClassStatus = 'scheduled' | 'cancelled'
+export type ClassStatus = 'ongoing' | 'completed' | 'cancelled'
 export type ClassAudience = 'group' | 'whole'
 export type HallOfFameCategory = 'A/L' | 'O/L'
 export type ThemeMode = 'dark' | 'light'
+
+export interface ClassTemplate {
+  id: string
+  class_name: string
+  grade: number
+  type: ClassAudience
+  weekday: number
+  weekday_label: string
+  start_time: string
+  end_time: string
+  time_label: string
+  venue: string | null
+}
 
 export interface UserProfile {
   user_id: string

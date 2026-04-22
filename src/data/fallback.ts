@@ -12,6 +12,7 @@ import type {
   TeamMember,
   UserProfile,
 } from '../types/models'
+import { buildMonthlyClasses, getClassTemplateById } from './classes'
 
 export const fallbackAnnouncements: Announcement[] = [
   {
@@ -34,38 +35,24 @@ export const fallbackAnnouncements: Announcement[] = [
   },
 ]
 
-export const fallbackClasses: ManagedClass[] = [
-  {
-    id: 'class-1',
-    class_name: 'Grade 8 Theory Masterclass',
-    class_date: '2026-04-25T09:00:00+05:30',
-    grade: 8,
-    type: 'group',
-    status: 'scheduled',
-    venue: 'MC Main Hall',
-    time_label: '9:00 AM - 11:00 AM',
-  },
-  {
-    id: 'class-2',
-    class_name: 'Grade 11 Paper Clinic',
-    class_date: '2026-04-26T14:00:00+05:30',
-    grade: 11,
-    type: 'whole',
-    status: 'scheduled',
-    venue: 'Online + Hall',
-    time_label: '2:00 PM - 4:30 PM',
-  },
-  {
-    id: 'class-3',
-    class_name: 'Grade 10 Group Class',
-    class_date: '2026-04-28T16:30:00+05:30',
-    grade: 10,
-    type: 'group',
-    status: 'cancelled',
-    venue: 'MC Branch 02',
-    time_label: '4:30 PM - 6:30 PM',
-  },
-]
+const aprilTemplates = ['g8-whole', 'g8-group', 'g10-theory', 'g10-whole', 'g11-whole']
+
+export const fallbackClasses: ManagedClass[] = aprilTemplates.flatMap((templateId) => {
+  const template = getClassTemplateById(templateId)
+  if (!template) return []
+
+  return buildMonthlyClasses({
+    template,
+    monthValue: '2026-04',
+    status: 'ongoing',
+  }).map((item, index) => ({
+    ...item,
+    id: `${templateId}-${index + 1}`,
+  }))
+})
+
+if (fallbackClasses[0]) fallbackClasses[0].status = 'completed'
+if (fallbackClasses[1]) fallbackClasses[1].status = 'cancelled'
 
 const hallOfFameSeed = [
   ['A/L', 'Nethuli Jayawardena'],

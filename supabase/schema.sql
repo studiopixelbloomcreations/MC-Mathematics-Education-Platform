@@ -78,7 +78,7 @@ create table if not exists public.classes (
   class_date timestamptz not null,
   grade integer not null references public.grades (grade) on delete cascade,
   type text not null check (type in ('group', 'whole')),
-  status text not null check (status in ('scheduled', 'cancelled')),
+  status text not null check (status in ('ongoing', 'completed', 'cancelled')),
   venue text,
   time_label text,
   created_at timestamptz not null default timezone('utc', now())
@@ -169,6 +169,17 @@ create trigger users_set_updated_at
 before update on public.users
 for each row
 execute procedure public.set_updated_at();
+
+update public.classes
+set status = 'ongoing'
+where status = 'scheduled';
+
+alter table public.classes
+drop constraint if exists classes_status_check;
+
+alter table public.classes
+add constraint classes_status_check
+check (status in ('ongoing', 'completed', 'cancelled'));
 
 alter table public.users enable row level security;
 alter table public.lessons enable row level security;

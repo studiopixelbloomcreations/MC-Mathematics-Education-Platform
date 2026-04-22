@@ -203,22 +203,38 @@ export function UserDashboardPage() {
     ),
     classes: (
       <div className="grid gap-5">
-        {sortedClasses.map((item) => (
-          <div key={item.id} className="glass-panel rounded-[2rem] p-6">
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Grade {item.grade}</p>
-                <h3 className="font-display mt-2 text-2xl font-semibold text-white">{item.class_name}</h3>
+        {sortedClasses.length ? (
+          sortedClasses.map((item) => (
+            <div key={item.id} className="glass-panel rounded-[2rem] p-6">
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Grade {item.grade}</p>
+                  <h3 className="font-display mt-2 text-2xl font-semibold text-white">{item.class_name}</h3>
+                </div>
+                <StatusPill
+                  label={item.status}
+                  tone={
+                    item.status === 'completed'
+                      ? 'success'
+                      : item.status === 'cancelled'
+                        ? 'danger'
+                        : 'info'
+                  }
+                />
               </div>
-              <StatusPill label={item.status} tone={item.status === 'cancelled' ? 'danger' : 'info'} />
+              <div className="mt-5 grid gap-4 md:grid-cols-3">
+                <InfoTile label="Date" value={format(new Date(item.class_date), 'PPP')} />
+                <InfoTile label="Time" value={item.time_label ?? 'TBA'} />
+                <InfoTile label="Venue" value={item.venue ?? 'MC Campus'} />
+              </div>
             </div>
-            <div className="mt-5 grid gap-4 md:grid-cols-3">
-              <InfoTile label="Date" value={format(new Date(item.class_date), 'PPP')} />
-              <InfoTile label="Time" value={item.time_label ?? 'TBA'} />
-              <InfoTile label="Venue" value={item.venue ?? 'MC Campus'} />
-            </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <EmptyState
+            title="No classes yet"
+            description="When the admin generates your monthly class schedule, it will appear here automatically."
+          />
+        )}
       </div>
     ),
     announcements: (
