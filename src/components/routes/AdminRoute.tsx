@@ -7,8 +7,8 @@ export function AdminRoute({ children }: PropsWithChildren) {
   const { firebaseUser, loading, profile } = useAuth()
 
   if (loading) return <LoadingScreen message="Checking admin permissions..." />
-  if (!firebaseUser) return <Navigate to="/landingpage" replace />
-  if (profile?.role !== 'admin') return <Navigate to="/userdashboard" replace />
+  if (!firebaseUser) return <Navigate to="/adminpanel/login" replace />
+  if (profile?.role !== 'admin') return <Navigate to="/adminpanel/login" replace />
 
   return children
 }

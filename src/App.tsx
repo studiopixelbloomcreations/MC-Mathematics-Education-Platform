@@ -14,6 +14,12 @@ const LoginPage = lazy(async () => ({
 const SignupPage = lazy(async () => ({
   default: (await import('./pages/SignupPage')).SignupPage,
 }))
+const AdminLoginPage = lazy(async () => ({
+  default: (await import('./pages/AdminLoginPage')).AdminLoginPage,
+}))
+const AdminSignupPage = lazy(async () => ({
+  default: (await import('./pages/AdminSignupPage')).AdminSignupPage,
+}))
 const UserDashboardPage = lazy(async () => ({
   default: (await import('./pages/UserDashboardPage')).UserDashboardPage,
 }))
@@ -30,6 +36,8 @@ export default function App() {
           <Route path="/landingpage" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
+          <Route path="/adminpanel/login" element={<AdminLoginPage />} />
+          <Route path="/adminpanel/signup" element={<AdminSignupPage />} />
           <Route
             path="/userdashboard"
             element={
