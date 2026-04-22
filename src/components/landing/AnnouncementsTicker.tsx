@@ -1,4 +1,5 @@
 import type { Announcement } from '../../types/models'
+import { EmptyState } from '../shared/EmptyState'
 
 interface AnnouncementsTickerProps {
   announcements: Announcement[]
@@ -20,19 +21,26 @@ export function AnnouncementsTicker({ announcements }: AnnouncementsTickerProps)
           </div>
         </div>
 
-        <div className="overflow-hidden">
-          <div className="ticker-track flex min-w-max gap-4">
-            {track.map((announcement, index) => (
-              <article
-                key={`${announcement.id}-${index}`}
-                className="min-w-[300px] rounded-[1.6rem] border border-white/8 bg-white/[0.03] p-5 md:min-w-[420px]"
-              >
-                <p className="font-display text-lg font-semibold text-white">{announcement.title}</p>
-                <p className="mt-3 text-sm leading-7 text-slate-300">{announcement.body}</p>
-              </article>
-            ))}
+        {announcements.length ? (
+          <div className="overflow-hidden">
+            <div className="ticker-track flex min-w-max gap-4">
+              {track.map((announcement, index) => (
+                <article
+                  key={`${announcement.id}-${index}`}
+                  className="min-w-[300px] rounded-[1.6rem] border border-white/8 bg-white/[0.03] p-5 md:min-w-[420px]"
+                >
+                  <p className="font-display text-lg font-semibold text-white">{announcement.title}</p>
+                  <p className="mt-3 text-sm leading-7 text-slate-300">{announcement.body}</p>
+                </article>
+              ))}
+            </div>
           </div>
-        </div>
+        ) : (
+          <EmptyState
+            title="Announcements will show here"
+            description="Once you publish announcements from the admin side, they will scroll here automatically."
+          />
+        )}
       </div>
     </section>
   )

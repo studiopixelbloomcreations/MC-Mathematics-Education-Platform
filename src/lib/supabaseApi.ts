@@ -34,6 +34,10 @@ async function requireTable<T>(promise: PromiseLike<{ data: T | null; error: Err
   }
 }
 
+function withFallbackIfEmpty<T>(data: T[], fallback: T[]) {
+  return data.length ? data : fallback
+}
+
 export async function fetchLandingPageData(): Promise<LandingPageData> {
   if (!hasSupabaseConfig || !supabase) return fallbackLandingData
 
@@ -57,9 +61,15 @@ export async function fetchLandingPageData(): Promise<LandingPageData> {
   ])
 
   return {
-    announcements: announcements as Announcement[],
-    classes: classes as ManagedClass[],
-    hallOfFame: hallOfFame as HallOfFameEntry[],
+    announcements: withFallbackIfEmpty(
+      announcements as Announcement[],
+      fallbackLandingData.announcements,
+    ),
+    classes: withFallbackIfEmpty(classes as ManagedClass[], fallbackLandingData.classes),
+    hallOfFame: withFallbackIfEmpty(
+      hallOfFame as HallOfFameEntry[],
+      fallbackLandingData.hallOfFame,
+    ),
   }
 }
 

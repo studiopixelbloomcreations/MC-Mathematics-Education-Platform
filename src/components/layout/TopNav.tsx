@@ -48,12 +48,17 @@ export function TopNav() {
               </button>
             </>
           ) : (
-            <button
-              onClick={() => void loginWithGoogle()}
-              className="rounded-full bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:scale-[1.02] hover:bg-cyan-300"
-            >
-              Sign in with Google
-            </button>
+            <div className="flex items-center gap-3">
+              <a href="#hero" className="text-sm text-slate-200 transition hover:text-white">
+                Sign Up
+              </a>
+              <button
+                onClick={() => void loginWithGoogle()}
+                className="rounded-full bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:scale-[1.02] hover:bg-cyan-300"
+              >
+                Sign Up with Google
+              </button>
+            </div>
           )}
         </nav>
 
@@ -93,7 +98,7 @@ export function TopNav() {
                 profile ? 'border border-cyan-400/20 text-cyan-200' : 'bg-cyan-400 text-slate-950',
               )}
             >
-              {profile ? 'Log out' : 'Sign in with Google'}
+              {profile ? 'Log out' : 'Sign Up with Google'}
             </button>
           </div>
         </div>

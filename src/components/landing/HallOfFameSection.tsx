@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { SectionHeading } from '../layout/SectionHeading'
+import { EmptyState } from '../shared/EmptyState'
 import type { HallOfFameEntry } from '../../types/models'
 
 interface HallOfFameSectionProps {
@@ -35,28 +36,37 @@ export function HallOfFameSection({ entries }: HallOfFameSectionProps) {
           ))}
         </div>
 
-        <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {filtered.map((entry) => (
-            <article
-              key={entry.id}
-              className="glass-panel overflow-hidden rounded-[2rem] transition duration-500 hover:-translate-y-1 hover:border-cyan-300/20"
-            >
-              <div className="relative h-72 overflow-hidden">
-                <img
-                  src={entry.image_url}
-                  alt={entry.student_name}
-                  className="h-full w-full object-cover transition duration-700 hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/10 to-transparent" />
-              </div>
-              <div className="p-6">
-                <p className="text-xs uppercase tracking-[0.22em] text-cyan-300">{entry.category}</p>
-                <h3 className="font-display mt-2 text-2xl font-semibold text-white">{entry.student_name}</h3>
-                <p className="mt-3 text-sm leading-7 text-slate-300">{entry.achievement}</p>
-              </div>
-            </article>
-          ))}
-        </div>
+        {filtered.length ? (
+          <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {filtered.map((entry) => (
+              <article
+                key={entry.id}
+                className="glass-panel overflow-hidden rounded-[2rem] transition duration-500 hover:-translate-y-1 hover:border-cyan-300/20"
+              >
+                <div className="relative h-72 overflow-hidden">
+                  <img
+                    src={entry.image_url}
+                    alt={entry.student_name}
+                    className="h-full w-full object-cover transition duration-700 hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/10 to-transparent" />
+                </div>
+                <div className="p-6">
+                  <p className="text-xs uppercase tracking-[0.22em] text-cyan-300">{entry.category}</p>
+                  <h3 className="font-display mt-2 text-2xl font-semibold text-white">{entry.student_name}</h3>
+                  <p className="mt-3 text-sm leading-7 text-slate-300">{entry.achievement}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div className="mt-8">
+            <EmptyState
+              title="Hall of Fame will appear here"
+              description="Add student names and photos in Supabase to populate this section on the live site."
+            />
+          </div>
+        )}
       </div>
     </section>
   )
