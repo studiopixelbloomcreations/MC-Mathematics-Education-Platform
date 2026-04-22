@@ -1,31 +1,3 @@
-import type { LessonTemplate } from '../types/models'
-
-export const lessonTemplates: LessonTemplate[] = [
-  { id: 'g6-01', grade: 6, lesson_name: 'Sets', order_index: 1 },
-  { id: 'g6-02', grade: 6, lesson_name: 'Place Value', order_index: 2 },
-  { id: 'g6-03', grade: 6, lesson_name: 'Addition and Subtraction', order_index: 3 },
-  { id: 'g6-04', grade: 6, lesson_name: 'Multiplication', order_index: 4 },
-  { id: 'g6-05', grade: 6, lesson_name: 'Division', order_index: 5 },
-  { id: 'g6-06', grade: 6, lesson_name: 'Estimation and Rounding Off', order_index: 6 },
-  { id: 'g6-07', grade: 6, lesson_name: 'Patterns', order_index: 7 },
-  { id: 'g6-08', grade: 6, lesson_name: 'Directions', order_index: 8 },
-  { id: 'g6-09', grade: 6, lesson_name: 'Fractions', order_index: 9 },
-  { id: 'g6-10', grade: 6, lesson_name: 'Decimals', order_index: 10 },
-  { id: 'g6-11', grade: 6, lesson_name: 'Percentage', order_index: 11 },
-  { id: 'g6-12', grade: 6, lesson_name: 'Rectilinear Plane Figures', order_index: 12 },
-  { id: 'g6-13', grade: 6, lesson_name: 'Perimeter', order_index: 13 },
-  { id: 'g6-14', grade: 6, lesson_name: 'Money', order_index: 14 },
-  { id: 'g6-15', grade: 6, lesson_name: 'Length', order_index: 15 },
-  { id: 'g6-16', grade: 6, lesson_name: 'Liquid Measurements', order_index: 16 },
-  { id: 'g6-17', grade: 6, lesson_name: 'Solids', order_index: 17 },
-  { id: 'g6-18', grade: 6, lesson_name: 'Algebraic Symbols', order_index: 18 },
-  { id: 'g6-19', grade: 6, lesson_name: 'Bar Graphs', order_index: 19 },
-  { id: 'g6-20', grade: 6, lesson_name: 'Symmetry', order_index: 20 },
-  { id: 'g6-21', grade: 6, lesson_name: 'Time', order_index: 21 },
-  { id: 'g6-22', grade: 6, lesson_name: 'Data Collection', order_index: 22 },
-  { id: 'g6-23', grade: 6, lesson_name: 'Data Representation in Tables', order_index: 23 },
-  { id: 'g6-24', grade: 6, lesson_name: 'Indices', order_index: 24 },
-  { id: 'g6-25', grade: 6, lesson_name: 'Area', order_index: 25 },
   // Grade 7 lessons
   { id: 'g7-01', grade: 7, lesson_name: "Symmetry", order_index: 1 },
   { id: 'g7-02', grade: 7, lesson_name: "Sets", order_index: 2 },
@@ -44,7 +16,6 @@ export const lessonTemplates: LessonTemplate[] = [
   { id: 'g7-15', grade: 7, lesson_name: "Algebraic Expressions", order_index: 15 },
   { id: 'g7-16', grade: 7, lesson_name: "(v) Numbers between 0 and 50 which are multiples of", order_index: 16 },
   { id: 'g7-17', grade: 7, lesson_name: "the answer", order_index: 17 },
-
   // Grade 8 lessons
   { id: 'g8-01', grade: 8, lesson_name: "Number Patterns", order_index: 1 },
   { id: 'g8-02', grade: 8, lesson_name: "Perimeter", order_index: 2 },
@@ -66,7 +37,6 @@ export const lessonTemplates: LessonTemplate[] = [
   { id: 'g8-18', grade: 8, lesson_name: "(iv) When 4n =", order_index: 18 },
   { id: 'g8-19', grade: 8, lesson_name: "n = 10", order_index: 19 },
   { id: 'g8-20', grade: 8, lesson_name: "You have learnt earlier that odd numbers are numbers which have a remainder of", order_index: 20 },
-
   // Grade 9 lessons
   { id: 'g9-01', grade: 9, lesson_name: "Number Patterns", order_index: 1 },
   { id: 'g9-02', grade: 9, lesson_name: "Binary Numbers", order_index: 2 },
@@ -86,7 +56,6 @@ export const lessonTemplates: LessonTemplate[] = [
   { id: 'g9-16', grade: 9, lesson_name: "the third term , T3 =", order_index: 16 },
   { id: 'g9-17', grade: 9, lesson_name: "the fourth term , T4 =", order_index: 17 },
   { id: 'g9-18', grade: 9, lesson_name: "Then, 2n + 3 =", order_index: 18 },
-
   // Grade 10 lessons
   { id: 'g10-01', grade: 10, lesson_name: "Perimeter", order_index: 1 },
   { id: 'g10-02', grade: 10, lesson_name: "Square Root", order_index: 2 },
@@ -108,7 +77,6 @@ export const lessonTemplates: LessonTemplate[] = [
   { id: 'g10-18', grade: 10, lesson_name: "Sets", order_index: 18 },
   { id: 'g10-19', grade: 10, lesson_name: "Glossary", order_index: 19 },
   { id: 'g10-20', grade: 10, lesson_name: "Lesson Sequence", order_index: 20 },
-
   // Grade 11 lessons
   { id: 'g11-01', grade: 11, lesson_name: "Real Numbers", order_index: 1 },
   { id: 'g11-02', grade: 11, lesson_name: "Indices and Logarithms -I", order_index: 2 },
@@ -121,10 +89,12 @@ export const lessonTemplates: LessonTemplate[] = [
   { id: 'g11-09', grade: 11, lesson_name: "Logarithm Tables", order_index: 9 },
   { id: 'g11-10', grade: 11, lesson_name: "Glossary", order_index: 10 },
   { id: 'g11-11', grade: 11, lesson_name: "Sequence of the Lessons", order_index: 11 },
-]
-
-export function getLessonTemplatesByGrade(grade: number) {
-  return lessonTemplates
-    .filter((lesson) => lesson.grade === grade)
-    .sort((first, second) => first.order_index - second.order_index)
-}
+  { id: 'g11-12', grade: 11, lesson_name: "we can write 2 =", order_index: 12 },
+  { id: 'g11-13', grade: 11, lesson_name: "the same numerical value. (For example", order_index: 13 },
+  { id: 'g11-14', grade: 11, lesson_name: "case. For example", order_index: 14 },
+  { id: 'g11-15', grade: 11, lesson_name: "the decimal representation of", order_index: 15 },
+  { id: 'g11-16', grade: 11, lesson_name: "the beginning in the decimal representation of", order_index: 16 },
+  { id: 'g11-17', grade: 11, lesson_name: "\" 4 and", order_index: 17 },
+  { id: 'g11-18', grade: 11, lesson_name: "( ) = Since 4", order_index: 18 },
+  { id: 'g11-19', grade: 11, lesson_name: "as 3 2 5 = 6", order_index: 19 },
+  { id: 'g11-20', grade: 11, lesson_name: "d.3 2", order_index: 20 },
