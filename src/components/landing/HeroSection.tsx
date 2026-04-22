@@ -1,11 +1,8 @@
 import { ArrowRight, BookOpen, MapPin, Sparkles } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { useAuth } from '../../providers/auth-context'
 import heroAsset from '../../assets/hero.png'
 
 export function HeroSection() {
-  const { profile } = useAuth()
-
   return (
     <section id="hero" className="relative px-4 pb-16 pt-10 md:px-6 lg:px-8">
       <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[1.15fr_0.85fr]">
@@ -36,12 +33,12 @@ export function HeroSection() {
               Log In
               <ArrowRight size={18} />
             </Link>
-            <Link
-              to={profile ? '/userdashboard' : '/landingpage#classes'}
+            <a
+              href="#classes"
               className="glass-button-secondary inline-flex items-center justify-center gap-2 px-6 py-3 font-semibold text-white"
             >
               View Classes
-            </Link>
+            </a>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3">

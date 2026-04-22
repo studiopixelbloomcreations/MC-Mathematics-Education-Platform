@@ -1,9 +1,7 @@
 import { format } from 'date-fns'
-import { useCurrentTime } from '../../hooks/useCurrentTime'
-import { formatClassStatusLabel, getComputedClassStatus, getClassStatusTone } from '../../lib/utils'
+import { useMemo } from 'react'
 import { SectionHeading } from '../layout/SectionHeading'
 import { EmptyState } from '../shared/EmptyState'
-import { StatusPill } from '../shared/StatusPill'
 import type { ManagedClass } from '../../types/models'
 
 interface ClassesSectionProps {
@@ -11,7 +9,34 @@ interface ClassesSectionProps {
 }
 
 export function ClassesSection({ classes }: ClassesSectionProps) {
-  const now = useCurrentTime()
+  const schedules = useMemo(() => {
+    const unique = new Map<
+      string,
+      ManagedClass & {
+        weekdayLabel: string
+      }
+    >()
+
+    classes.forEach((item) => {
+      const weekdayLabel = format(new Date(item.class_date), 'EEEE')
+      const key = [item.grade, item.class_name, weekdayLabel, item.time_label ?? '', item.venue ?? ''].join('|')
+
+      if (!unique.has(key)) {
+        unique.set(key, {
+          ...item,
+          weekdayLabel,
+        })
+      }
+    })
+
+    return [...unique.values()].sort((first, second) => {
+      const firstDate = new Date(first.class_date)
+      const secondDate = new Date(second.class_date)
+      const weekdayDelta = firstDate.getDay() - secondDate.getDay()
+      if (weekdayDelta !== 0) return weekdayDelta
+      return first.grade - second.grade
+    })
+  }, [classes])
 
   return (
     <section id="classes" className="px-4 py-24 md:px-6 lg:px-8">
@@ -19,37 +44,24 @@ export function ClassesSection({ classes }: ClassesSectionProps) {
         <SectionHeading
           eyebrow="Schedules"
           title="Theory and Paper Classes"
-          description="Timings, venues, and batch plans update live from Supabase so students always see the correct schedule across the public site and dashboard."
+          description="A clean weekly class schedule for each batch, so students can instantly see the correct class, day, and time."
         />
 
-        {classes.length ? (
+        {schedules.length ? (
           <div className="mt-10 grid gap-6 lg:grid-cols-2">
-            {classes.map((item) => (
-              <article key={item.id} className="glass-panel rounded-[2rem] p-6">
-                <div className="flex flex-wrap items-start justify-between gap-4">
+            {schedules.map((item) => (
+              <article key={`${item.class_name}-${item.weekdayLabel}-${item.time_label ?? 'tba'}`} className="glass-panel rounded-[2rem] p-6">
+                <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="text-xs uppercase tracking-[0.22em] text-slate-500">Grade {item.grade}</p>
                     <h3 className="font-display mt-2 text-2xl font-semibold text-white">{item.class_name}</h3>
-                  </div>
-                  <StatusPill
-                    label={formatClassStatusLabel(getComputedClassStatus(item, now))}
-                    tone={getClassStatusTone(getComputedClassStatus(item, now))}
-                  />
-                </div>
-                <div className="mt-6 grid gap-4 sm:grid-cols-3">
-                  <div className="rounded-2xl bg-white/[0.03] p-4">
-                    <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Date</p>
-                    <p className="mt-2 text-sm text-slate-200">
-                      {format(new Date(item.class_date), 'EEE, MMM d')}
+                    <p className="mt-4 text-base font-medium text-cyan-200">
+                      {item.weekdayLabel} {item.time_label ? `• ${item.time_label}` : ''}
                     </p>
+                    <p className="mt-2 text-sm text-slate-400">{item.venue ?? 'MC Campus'}</p>
                   </div>
-                  <div className="rounded-2xl bg-white/[0.03] p-4">
-                    <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Time</p>
-                    <p className="mt-2 text-sm text-slate-200">{item.time_label ?? 'Will be announced'}</p>
-                  </div>
-                  <div className="rounded-2xl bg-white/[0.03] p-4">
-                    <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Venue</p>
-                    <p className="mt-2 text-sm text-slate-200">{item.venue ?? 'MC Campus'}</p>
+                  <div className="rounded-full border border-cyan-400/18 bg-cyan-400/8 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-cyan-300">
+                    Weekly
                   </div>
                 </div>
               </article>
