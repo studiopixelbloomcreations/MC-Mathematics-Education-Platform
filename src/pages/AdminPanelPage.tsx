@@ -5,6 +5,7 @@ import toast from 'react-hot-toast'
 import { AdminFormCard } from '../components/admin/AdminFormCard'
 import { StatusPill } from '../components/shared/StatusPill'
 import { classTemplates, getMonthValue } from '../data/classes'
+import { getLessonTemplatesByGrade } from '../data/lessons'
 import { useCurrentTime } from '../hooks/useCurrentTime'
 import { useAdminData } from '../hooks/useAdminData'
 import {
@@ -26,11 +27,15 @@ const tabs = ['overview', 'lessons', 'papers', 'announcements', 'users', 'classe
 export function AdminPanelPage() {
   const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>('overview')
   const [query, setQuery] = useState('')
+  const [lessonGrade, setLessonGrade] = useState(6)
+  const [selectedLessonName, setSelectedLessonName] = useState(getLessonTemplatesByGrade(6)[0]?.lesson_name ?? '')
   const [scheduleMonth, setScheduleMonth] = useState(getMonthValue())
   const [isResetting, setIsResetting] = useState(false)
   const [isGeneratingSchedule, setIsGeneratingSchedule] = useState(false)
   const { data, refresh } = useAdminData()
   const now = useCurrentTime()
+  const availableLessons = useMemo(() => getLessonTemplatesByGrade(lessonGrade), [lessonGrade])
+  const selectedLesson = availableLessons.find((lesson) => lesson.lesson_name === selectedLessonName) ?? availableLessons[0] ?? null
 
   const filteredUsers = useMemo(() => {
     return data.users.filter((user) =>
@@ -68,7 +73,7 @@ export function AdminPanelPage() {
       await createLesson({
         grade: Number(formData.get('grade')),
         lesson_name: String(formData.get('lesson_name') ?? ''),
-        status: String(formData.get('status') ?? 'not_started') as LessonStatus,
+        status: String(formData.get('status') ?? 'upcoming') as LessonStatus,
         completion_date: String(formData.get('completion_date') ?? '') || null,
         order_index: Number(formData.get('order_index') ?? 1),
       })
@@ -280,7 +285,7 @@ export function AdminPanelPage() {
           {activeTab === 'lessons' ? (
             <AdminFormCard
               title="Lessons"
-              description="Store lesson progression by grade. Coverage percentage is computed dynamically from completed lessons."
+              description="Lesson names come from the codebase lessons file. For now Grade 6 lessons have been added from the textbook and you can mark each one as completed, ongoing, or upcoming."
             >
               <form
                 onSubmit={(event) => {
@@ -290,21 +295,73 @@ export function AdminPanelPage() {
                 }}
                 className="grid gap-4 md:grid-cols-2"
               >
-                <Input name="lesson_name" label="Lesson Name" />
-                <Input name="grade" label="Grade" type="number" />
+                <Select
+                  name="grade"
+                  label="Grade"
+                  value={String(lessonGrade)}
+                  onChange={(event) => {
+                    const nextGrade = Number(event.target.value)
+                    const nextLessons = getLessonTemplatesByGrade(nextGrade)
+                    setLessonGrade(nextGrade)
+                    setSelectedLessonName(nextLessons[0]?.lesson_name ?? '')
+                  }}
+                  options={[
+                    ['6', 'Grade 6'],
+                    ['7', 'Grade 7'],
+                    ['8', 'Grade 8'],
+                    ['9', 'Grade 9'],
+                    ['10', 'Grade 10'],
+                    ['11', 'Grade 11'],
+                  ]}
+                />
+                <Select
+                  name="lesson_name"
+                  label="Lesson"
+                  value={selectedLessonName}
+                  onChange={(event) => setSelectedLessonName(event.target.value)}
+                  options={
+                    availableLessons.length
+                      ? availableLessons.map((lesson) => [lesson.lesson_name, `${lesson.order_index}. ${lesson.lesson_name}`])
+                      : [['', 'No codebase lessons added yet for this grade']]
+                  }
+                />
                 <Select
                   name="status"
                   label="Status"
                   options={[
                     ['completed', 'Completed'],
                     ['ongoing', 'Ongoing'],
-                    ['not_started', 'Not Started'],
+                    ['upcoming', 'Upcoming'],
                   ]}
                 />
-                <Input name="order_index" label="Order Index" type="number" />
+                <Input
+                  name="order_index"
+                  label="Order Index"
+                  type="number"
+                  value={String(selectedLesson?.order_index ?? 1)}
+                />
                 <Input name="completion_date" label="Completion Date" type="date" required={false} />
                 <SubmitButton label="Save lesson" className="md:col-span-2" />
               </form>
+
+              <div className="mt-6 grid gap-3">
+                {availableLessons.length ? (
+                  availableLessons.map((lesson) => (
+                    <article key={lesson.id} className="rounded-[1.4rem] border border-white/8 bg-white/[0.03] p-4">
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="text-sm text-white">
+                          {lesson.order_index}. {lesson.lesson_name}
+                        </p>
+                        <StatusPill label={`Grade ${lesson.grade}`} tone="info" />
+                      </div>
+                    </article>
+                  ))
+                ) : (
+                  <div className="rounded-[1.4rem] border border-dashed border-white/10 bg-white/[0.03] px-4 py-5 text-sm text-slate-400">
+                    No codebase lessons have been added for this grade yet.
+                  </div>
+                )}
+              </div>
             </AdminFormCard>
           ) : null}
 

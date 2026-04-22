@@ -245,7 +245,7 @@ export const fallbackLessons: Lesson[] = [
     id: 'lesson-4',
     grade: 8,
     lesson_name: 'Mensuration Strategies',
-    status: 'not_started',
+    status: 'upcoming',
     completion_date: null,
     order_index: 4,
   },

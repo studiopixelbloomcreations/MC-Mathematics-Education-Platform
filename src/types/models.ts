@@ -1,12 +1,19 @@
 export type EnrollmentType = 'theory' | 'paper' | 'both'
 export type UserRole = 'student' | 'admin'
-export type LessonStatus = 'completed' | 'ongoing' | 'not_started'
+export type LessonStatus = 'completed' | 'ongoing' | 'upcoming'
 export type PaperStatus = 'completed' | 'upcoming'
 export type ClassStatus = 'ongoing' | 'completed' | 'cancelled'
 export type ClassDisplayStatus = 'upcoming' | 'ongoing' | 'completed' | 'cancelled'
 export type ClassAudience = 'group' | 'whole'
 export type HallOfFameCategory = 'A/L' | 'O/L'
 export type ThemeMode = 'dark' | 'light'
+
+export interface LessonTemplate {
+  id: string
+  grade: number
+  lesson_name: string
+  order_index: number
+}
 
 export interface ClassTemplate {
   id: string

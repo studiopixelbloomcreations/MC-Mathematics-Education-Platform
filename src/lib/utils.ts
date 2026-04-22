@@ -21,7 +21,7 @@ export function calculateTheoryCoverage(lessons: Lesson[]) {
 export function getCurrentTheoryLesson(lessons: Lesson[]) {
   return (
     lessons.find((lesson) => lesson.status === 'ongoing') ??
-    lessons.find((lesson) => lesson.status === 'not_started') ??
+    lessons.find((lesson) => lesson.status === 'upcoming') ??
     lessons.at(-1) ??
     null
   )

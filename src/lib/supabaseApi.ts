@@ -42,9 +42,15 @@ function withFallbackIfEmpty<T>(data: T[], fallback: T[]) {
 }
 
 type DatabaseClassStatus = ManagedClass['status'] | 'scheduled'
+type DatabaseLessonStatus = Lesson['status'] | 'not_started'
 
 function normalizeClassStatus(status: DatabaseClassStatus): ManagedClass['status'] {
   if (status === 'scheduled') return 'ongoing'
+  return status
+}
+
+function normalizeLessonStatus(status: DatabaseLessonStatus): Lesson['status'] {
+  if (status === 'not_started') return 'upcoming'
   return status
 }
 
@@ -59,6 +65,17 @@ function normalizeManagedClasses(
   items: Array<ManagedClass | (Omit<ManagedClass, 'status'> & { status: DatabaseClassStatus })>,
 ) {
   return items.map((item) => normalizeManagedClass(item))
+}
+
+function normalizeLesson(item: Lesson | (Omit<Lesson, 'status'> & { status: DatabaseLessonStatus })) {
+  return {
+    ...item,
+    status: normalizeLessonStatus(item.status),
+  } as Lesson
+}
+
+function normalizeLessons(items: Array<Lesson | (Omit<Lesson, 'status'> & { status: DatabaseLessonStatus })>) {
+  return items.map((item) => normalizeLesson(item))
 }
 
 async function syncMonthlyClasses(monthValue = getMonthValue()) {
@@ -287,7 +304,7 @@ export async function fetchDashboardData(userId: string): Promise<DashboardData>
     marks: marks as MarkEntry[],
     classes: normalizeManagedClasses(classes as Array<ManagedClass & { status: DatabaseClassStatus }>),
     announcements: announcements as Announcement[],
-    lessons: lessons as Lesson[],
+    lessons: normalizeLessons(lessons as Array<Lesson & { status: DatabaseLessonStatus }>),
     papers: papers as Paper[],
   }
 }
@@ -314,7 +331,7 @@ export async function fetchAdminData(): Promise<AdminData> {
 
   return {
     users: users as UserProfile[],
-    lessons: lessons as Lesson[],
+    lessons: normalizeLessons(lessons as Array<Lesson & { status: DatabaseLessonStatus }>),
     papers: papers as Paper[],
     announcements: announcements as Announcement[],
     classes: normalizeManagedClasses(classes as Array<ManagedClass & { status: DatabaseClassStatus }>),
@@ -380,8 +397,29 @@ export async function createAnnouncement(payload: Omit<Announcement, 'id' | 'cre
 
 export async function createLesson(payload: Omit<Lesson, 'id'>) {
   if (!hasSupabaseConfig || !supabase) return null
-  const { data } = await supabase.from('lessons').insert(payload).select('*').single()
-  return data as Lesson | null
+  const { data, error } = await supabase.from('lessons').insert(payload).select('*').single()
+  if (!error && data) return normalizeLesson(data as Lesson & { status: DatabaseLessonStatus })
+
+  const canRetryWithLegacyStatus =
+    payload.status === 'upcoming' &&
+    error &&
+    (error.message.toLowerCase().includes('not_started') ||
+      error.message.toLowerCase().includes('status') ||
+      error.code === '23514')
+
+  if (canRetryWithLegacyStatus) {
+    const { data: legacyData, error: legacyError } = await supabase
+      .from('lessons')
+      .insert({ ...payload, status: 'not_started' })
+      .select('*')
+      .single()
+
+    if (legacyError) throw legacyError
+    return normalizeLesson(legacyData as Lesson & { status: DatabaseLessonStatus })
+  }
+
+  if (error) throw error
+  return null
 }
 
 export async function createClass(payload: Omit<ManagedClass, 'id'>) {

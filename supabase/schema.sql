@@ -46,7 +46,7 @@ create table if not exists public.lessons (
   id uuid primary key default gen_random_uuid(),
   grade integer not null references public.grades (grade) on delete cascade,
   lesson_name text not null,
-  status text not null check (status in ('completed', 'ongoing', 'not_started')),
+  status text not null check (status in ('completed', 'ongoing', 'upcoming')),
   completion_date date,
   order_index integer not null default 1,
   created_at timestamptz not null default timezone('utc', now())
@@ -264,6 +264,17 @@ drop constraint if exists classes_status_check;
 alter table public.classes
 add constraint classes_status_check
 check (status in ('ongoing', 'completed', 'cancelled'));
+
+update public.lessons
+set status = 'upcoming'
+where status = 'not_started';
+
+alter table public.lessons
+drop constraint if exists lessons_status_check;
+
+alter table public.lessons
+add constraint lessons_status_check
+check (status in ('completed', 'ongoing', 'upcoming'));
 
 create unique index if not exists classes_unique_schedule_idx
 on public.classes (class_name, grade, type, class_date);
