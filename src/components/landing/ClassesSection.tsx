@@ -58,7 +58,7 @@ export function ClassesSection({ classes }: ClassesSectionProps) {
                     <p className="mt-4 text-base font-medium text-cyan-200">
                       {item.weekdayLabel} {item.time_label ? `• ${item.time_label}` : ''}
                     </p>
-                    <p className="mt-2 text-sm text-slate-400">{item.venue ?? 'MC Campus'}</p>
+                    <p className="mt-2 text-sm text-slate-400">{item.venue ?? 'Lexicon Kurunegala'}</p>
                   </div>
                   <div className="rounded-full border border-cyan-400/18 bg-cyan-400/8 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-cyan-300">
                     Weekly

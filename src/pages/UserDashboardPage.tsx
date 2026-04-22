@@ -224,7 +224,7 @@ export function UserDashboardPage() {
               <div className="mt-5 grid gap-4 md:grid-cols-3">
                 <InfoTile label="Date" value={format(new Date(item.class_date), 'PPP')} />
                 <InfoTile label="Time" value={item.time_label ?? 'TBA'} />
-                <InfoTile label="Venue" value={item.venue ?? 'MC Campus'} />
+                <InfoTile label="Venue" value={item.venue ?? 'Lexicon Kurunegala'} />
               </div>
             </div>
           ))

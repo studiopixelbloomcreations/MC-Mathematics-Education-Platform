@@ -7,7 +7,7 @@ interface TeamSectionProps {
 
 export function TeamSection({ members }: TeamSectionProps) {
   return (
-    <section className="px-4 py-28 md:px-6 lg:px-8">
+    <section id="team" className="px-4 py-28 md:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           eyebrow="Team"

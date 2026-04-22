@@ -13,7 +13,7 @@ export const classTemplates: ClassTemplate[] = [
     start_time: '17:30',
     end_time: '20:30',
     time_label: '5:30 PM - 8:30 PM',
-    venue: 'MC Campus',
+    venue: 'Lexicon Kurunegala',
   },
   {
     id: 'g8-whole',
@@ -25,7 +25,7 @@ export const classTemplates: ClassTemplate[] = [
     start_time: '14:30',
     end_time: '17:15',
     time_label: '2:30 PM - 5:15 PM',
-    venue: 'MC Campus',
+    venue: 'Lexicon Kurunegala',
   },
   {
     id: 'g9-whole',
@@ -37,7 +37,7 @@ export const classTemplates: ClassTemplate[] = [
     start_time: '14:30',
     end_time: '17:15',
     time_label: '2:30 PM - 5:15 PM',
-    venue: 'MC Campus',
+    venue: 'Lexicon Kurunegala',
   },
   {
     id: 'g9-group',
@@ -49,7 +49,7 @@ export const classTemplates: ClassTemplate[] = [
     start_time: '17:30',
     end_time: '20:30',
     time_label: '5:30 PM - 8:30 PM',
-    venue: 'MC Campus',
+    venue: 'Lexicon Kurunegala',
   },
   {
     id: 'g7-whole',
@@ -61,7 +61,7 @@ export const classTemplates: ClassTemplate[] = [
     start_time: '14:30',
     end_time: '17:15',
     time_label: '2:30 PM - 5:15 PM',
-    venue: 'MC Campus',
+    venue: 'Lexicon Kurunegala',
   },
   {
     id: 'g11-group',
@@ -73,7 +73,7 @@ export const classTemplates: ClassTemplate[] = [
     start_time: '17:30',
     end_time: '21:00',
     time_label: '5:30 PM - 9:00 PM',
-    venue: 'MC Campus',
+    venue: 'Lexicon Kurunegala',
   },
   {
     id: 'g6-whole',
@@ -85,7 +85,7 @@ export const classTemplates: ClassTemplate[] = [
     start_time: '14:30',
     end_time: '17:15',
     time_label: '2:30 PM - 5:15 PM',
-    venue: 'MC Campus',
+    venue: 'Lexicon Kurunegala',
   },
   {
     id: 'g8-group',
@@ -97,7 +97,7 @@ export const classTemplates: ClassTemplate[] = [
     start_time: '17:30',
     end_time: '19:30',
     time_label: '5:30 PM - 7:30 PM',
-    venue: 'MC Campus',
+    venue: 'Lexicon Kurunegala',
   },
   {
     id: 'g11-whole',
@@ -109,7 +109,7 @@ export const classTemplates: ClassTemplate[] = [
     start_time: '07:30',
     end_time: '12:00',
     time_label: '7:30 AM - 12:00 PM',
-    venue: 'MC Campus',
+    venue: 'Lexicon Kurunegala',
   },
   {
     id: 'g10-whole',
@@ -121,7 +121,7 @@ export const classTemplates: ClassTemplate[] = [
     start_time: '13:00',
     end_time: '17:00',
     time_label: '1:00 PM - 5:00 PM',
-    venue: 'MC Campus',
+    venue: 'Lexicon Kurunegala',
   },
 ]
 

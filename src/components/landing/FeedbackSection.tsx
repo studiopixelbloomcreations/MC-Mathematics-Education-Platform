@@ -9,7 +9,7 @@ interface FeedbackSectionProps {
 
 export function FeedbackSection({ feedback }: FeedbackSectionProps) {
   return (
-    <section className="px-4 py-28 md:px-6 lg:px-8">
+    <section id="feedback" className="px-4 py-28 md:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           eyebrow="Student Feedback"

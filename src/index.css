@@ -30,9 +30,10 @@ body {
   margin: 0;
   min-width: 320px;
   background:
-    radial-gradient(circle at top, rgba(59, 130, 246, 0.22), transparent 34%),
-    radial-gradient(circle at right, rgba(34, 211, 238, 0.16), transparent 24%),
-    linear-gradient(180deg, #030711 0%, #06101f 35%, #020617 100%);
+    radial-gradient(circle at 14% 10%, rgba(59, 130, 246, 0.3), transparent 28%),
+    radial-gradient(circle at 82% 18%, rgba(34, 211, 238, 0.22), transparent 24%),
+    radial-gradient(circle at 50% 62%, rgba(139, 92, 246, 0.14), transparent 28%),
+    linear-gradient(180deg, #020617 0%, #061427 38%, #020617 100%);
   color: var(--text);
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
@@ -50,9 +51,10 @@ body.theme-light {
   --text: #0f172a;
   --muted: #475569;
   background:
-    radial-gradient(circle at top, rgba(59, 130, 246, 0.12), transparent 36%),
-    radial-gradient(circle at right, rgba(34, 211, 238, 0.12), transparent 22%),
-    linear-gradient(180deg, #f8fbff 0%, #eff6ff 36%, #f8fafc 100%);
+    radial-gradient(circle at 12% 10%, rgba(96, 165, 250, 0.22), transparent 28%),
+    radial-gradient(circle at 82% 22%, rgba(34, 211, 238, 0.18), transparent 24%),
+    radial-gradient(circle at 50% 58%, rgba(191, 219, 254, 0.28), transparent 30%),
+    linear-gradient(180deg, #f5f9ff 0%, #eaf4ff 38%, #f7fbff 100%);
 }
 
 a {

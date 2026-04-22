@@ -12,7 +12,10 @@ export function TopNav() {
   const links = [
     { label: 'Home', href: '#hero' },
     { label: 'Hall of Fame', href: '#hall-of-fame' },
+    { label: 'Mission', href: '#mission-vision' },
     { label: 'Classes', href: '#classes' },
+    { label: 'Feedback', href: '#feedback' },
+    { label: 'Team', href: '#team' },
     { label: 'Announcements', href: '#announcements' },
     { label: 'Contact', href: '#contact' },
   ]

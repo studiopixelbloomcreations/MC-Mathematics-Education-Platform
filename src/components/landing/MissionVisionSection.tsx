@@ -16,7 +16,7 @@ export function MissionVisionSection() {
   ]
 
   return (
-    <section className="px-4 py-24 md:px-6 lg:px-8">
+    <section id="mission-vision" className="px-4 py-24 md:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           eyebrow="Institute DNA"

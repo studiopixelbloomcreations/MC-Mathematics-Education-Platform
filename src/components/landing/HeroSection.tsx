@@ -21,7 +21,8 @@ export function HeroSection() {
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-8 text-slate-300 md:text-lg">
               MC Mathematics by Malinga C. Dissanayaka blends theory teaching, paper practice, disciplined class
-              guidance, and modern student support into one focused mathematics institute experience.
+              guidance, and modern student support into one focused mathematics institute experience based at Lexicon
+              Kurunegala.
             </p>
           </div>
 
@@ -109,12 +110,12 @@ export function HeroSection() {
                   </div>
                   <div>
                     <p className="font-display text-lg font-semibold text-white">Institute support</p>
-                    <p className="text-sm text-slate-400">Schedules and updates from one place</p>
+                    <p className="text-sm text-slate-400">Operating from Lexicon Kurunegala</p>
                   </div>
                 </div>
                 <p className="mt-4 text-sm leading-7 text-slate-300">
-                  Log in with Google to unlock the student portal, while the public site stays focused on the institute,
-                  classes, and student achievements.
+                  Rooted in Lexicon Kurunegala and currently operating from Lexicon Kurunegala, MC Mathematics keeps
+                  students and parents connected through one organized institute platform.
                 </p>
               </div>
             </div>

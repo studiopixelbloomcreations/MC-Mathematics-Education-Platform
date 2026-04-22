@@ -17,7 +17,7 @@ export function LandingPage() {
   const { profile } = useAuth()
 
   return (
-    <div className="bg-noise relative isolate overflow-hidden">
+    <div className="bg-noise relative isolate overflow-x-hidden">
       <MathBackground />
       <div className="relative z-10">
         <TopNav />
