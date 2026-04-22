@@ -14,6 +14,12 @@ dist-ssr
 .env.*
 *.local
 
+# Firebase-generated AI helper folders
+firebase-functions/firebase-functions/.agents/
+firebase-functions/firebase-functions/.claude/
+firebase-functions/firebase-functions/.windsurf/
+firebase-functions/firebase-functions/skills-lock.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
