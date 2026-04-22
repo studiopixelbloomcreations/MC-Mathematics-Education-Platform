@@ -27,6 +27,13 @@ npm install
 
 2. Copy `.env.example` to `.env` and fill in Firebase + Supabase values.
 
+You can use either:
+
+- one JSON variable: `VITE_APP_CONFIG_JSON`
+- or the seven separate `VITE_*` variables
+
+If `VITE_APP_CONFIG_JSON` is present, the app will use that first.
+
 3. In Supabase:
 
 - Run [`supabase/schema.sql`](./supabase/schema.sql)
