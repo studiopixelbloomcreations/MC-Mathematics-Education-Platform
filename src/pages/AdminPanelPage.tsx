@@ -181,9 +181,9 @@ export function AdminPanelPage() {
   }
 
   return (
-    <div className="px-4 py-6 md:px-6 lg:px-8">
+    <div className="px-4 py-8 md:px-6 md:py-10 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <div className="glass-panel rounded-[2rem] p-6 md:p-8">
+        <div className="glass-panel rounded-[2rem] p-8 md:p-10">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
               <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/5 px-4 py-2 text-xs uppercase tracking-[0.22em] text-emerald-300">
@@ -201,7 +201,7 @@ export function AdminPanelPage() {
           </div>
         </div>
 
-        <div className="mt-6 flex flex-wrap gap-3">
+        <div className="mt-7 flex flex-wrap gap-4">
           {tabs.map((tab) => (
             <button
               key={tab}
@@ -217,17 +217,17 @@ export function AdminPanelPage() {
           ))}
         </div>
 
-        <div className="mt-6 space-y-6">
+        <div className="mt-7 space-y-7">
           {activeTab === 'overview' ? (
             <>
-              <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+              <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
                 {[
                   ['Students', String(data.users.length)],
                   ['Lessons', String(data.lessons.length)],
                   ['Papers', String(data.papers.length)],
                   ['Announcements', String(data.announcements.length)],
                 ].map(([label, value]) => (
-                  <div key={label} className="glass-panel rounded-[2rem] p-5">
+                  <div key={label} className="glass-panel rounded-[2rem] p-6">
                     <p className="text-xs uppercase tracking-[0.2em] text-slate-500">{label}</p>
                     <p className="font-display mt-4 text-3xl font-semibold text-white">{value}</p>
                   </div>
@@ -441,7 +441,7 @@ export function AdminPanelPage() {
                 </form>
               </AdminFormCard>
 
-              <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
+              <div className="grid gap-7 xl:grid-cols-[0.9fr_1.1fr]">
                 <AdminFormCard
                   title="Codebase Timetable"
                   description="These are the fixed weekly classes currently stored in the new `classes` source file."
@@ -523,7 +523,7 @@ export function AdminPanelPage() {
           ) : null}
 
           {activeTab === 'users' ? (
-            <div className="glass-panel rounded-[2rem] p-6">
+            <div className="glass-panel rounded-[2rem] p-7">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
                   <h3 className="font-display text-2xl font-semibold text-white">Users</h3>

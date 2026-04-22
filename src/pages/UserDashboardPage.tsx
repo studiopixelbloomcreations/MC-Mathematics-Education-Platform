@@ -54,23 +54,23 @@ export function UserDashboardPage() {
 
   const sections: Record<string, React.ReactNode> = {
     overview: (
-      <div className="space-y-6">
+      <div className="space-y-7">
         <OnboardingCard profile={data.profile} onComplete={handleProfileUpdated} />
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
           {[
             ['Latest Test Score', latestMark ? `${latestMark}%` : 'No data'],
             ['Theory Coverage', `${coverage}%`],
             ['Current Theory Lesson', currentLesson?.lesson_name ?? 'Pending'],
             ['Upcoming Paper', currentPaper?.title ?? 'Not enrolled yet'],
           ].map(([label, value]) => (
-            <div key={label} className="glass-panel rounded-[2rem] p-5">
+            <div key={label} className="glass-panel rounded-[2rem] p-6">
               <p className="text-xs uppercase tracking-[0.22em] text-slate-500">{label}</p>
               <p className="font-display mt-4 text-2xl font-semibold text-white">{value}</p>
             </div>
           ))}
         </div>
-        <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-          <div className="glass-panel rounded-[2rem] p-6">
+        <div className="grid gap-7 xl:grid-cols-[1.2fr_0.8fr]">
+          <div className="glass-panel rounded-[2rem] p-7">
             <div className="mb-6 flex items-center justify-between gap-4">
               <div>
                 <p className="text-xs uppercase tracking-[0.22em] text-cyan-300/80">Performance trend</p>
@@ -107,7 +107,7 @@ export function UserDashboardPage() {
             )}
           </div>
 
-          <div className="glass-panel rounded-[2rem] p-6">
+          <div className="glass-panel rounded-[2rem] p-7">
             <div className="flex items-center gap-3">
               <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-cyan-400/10 text-cyan-200">
                 <TrendingUp size={20} />
@@ -124,7 +124,7 @@ export function UserDashboardPage() {
         </div>
 
         {currentPaper ? (
-          <div className="glass-panel rounded-[2rem] p-6">
+          <div className="glass-panel rounded-[2rem] p-7">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
                 <p className="text-xs uppercase tracking-[0.22em] text-cyan-300/80">Current paper access</p>
@@ -172,7 +172,7 @@ export function UserDashboardPage() {
     ),
     statistics: (
       <div className="space-y-6">
-        <div className="glass-panel rounded-[2rem] p-6">
+        <div className="glass-panel rounded-[2rem] p-7">
           <h3 className="font-display text-2xl font-semibold text-white">Statistics</h3>
           <p className="mt-3 text-sm leading-7 text-slate-300">
             Auto-generated from the Supabase `marks` table for this student.
@@ -207,10 +207,10 @@ export function UserDashboardPage() {
       </div>
     ),
     classes: (
-      <div className="grid gap-5">
+      <div className="grid gap-6">
         {sortedClasses.length ? (
           sortedClasses.map((item) => (
-            <div key={item.id} className="glass-panel rounded-[2rem] p-6">
+            <div key={item.id} className="glass-panel rounded-[2rem] p-7">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
                   <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Grade {item.grade}</p>
@@ -237,15 +237,15 @@ export function UserDashboardPage() {
       </div>
     ),
     announcements: (
-      <div className="grid gap-5">
+      <div className="grid gap-6">
         {data.announcements.map((announcement) => (
           <AnnouncementCard key={announcement.id} announcement={announcement} />
         ))}
       </div>
     ),
     'class-stats': (
-      <div className="grid gap-6 xl:grid-cols-2">
-        <div className="glass-panel rounded-[2rem] p-6">
+      <div className="grid gap-7 xl:grid-cols-2">
+        <div className="glass-panel rounded-[2rem] p-7">
           <h3 className="font-display text-2xl font-semibold text-white">Lesson progression</h3>
           <div className="mt-6 space-y-4">
             {data.lessons.map((lesson) => (
@@ -264,7 +264,7 @@ export function UserDashboardPage() {
             ))}
           </div>
         </div>
-        <div className="glass-panel rounded-[2rem] p-6">
+        <div className="glass-panel rounded-[2rem] p-7">
           <h3 className="font-display text-2xl font-semibold text-white">Paper progression</h3>
           <div className="mt-6 space-y-4">
             {data.papers.map((paper) => (
@@ -309,9 +309,9 @@ export function UserDashboardPage() {
   }
 
   return (
-    <div className="px-4 py-6 md:px-6 lg:px-8">
+    <div className="px-4 py-8 md:px-6 md:py-10 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-5">
           <div>
             <Link to="/landingpage" className="text-sm text-cyan-300 hover:text-cyan-200">
               Back to landing page
@@ -335,7 +335,7 @@ export function UserDashboardPage() {
           </div>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
+        <div className="grid gap-7 lg:grid-cols-[300px_1fr]">
           <DashboardSidebar active={activeSection} onChange={setActiveSection} />
           <section key={activeSection}>
             {sections[activeSection]}
@@ -348,7 +348,7 @@ export function UserDashboardPage() {
 
 function InfoTile({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl bg-white/[0.03] p-4">
+    <div className="rounded-2xl bg-white/[0.03] p-5">
       <p className="text-xs uppercase tracking-[0.18em] text-slate-500">{label}</p>
       <p className="mt-3 text-sm text-slate-200">{value}</p>
     </div>
@@ -359,7 +359,7 @@ function AnnouncementCard({ announcement }: { announcement: Announcement }) {
   const embedUrl = toYoutubeEmbed(announcement.youtube_url)
 
   return (
-    <div className="glass-panel rounded-[2rem] p-6">
+    <div className="glass-panel rounded-[2rem] p-7">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-xs uppercase tracking-[0.18em] text-cyan-300/80">

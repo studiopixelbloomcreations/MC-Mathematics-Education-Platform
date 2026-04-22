@@ -18,18 +18,18 @@ const items = [
 
 export function DashboardSidebar({ active, onChange }: DashboardSidebarProps) {
   return (
-    <aside className="glass-panel scrollbar-soft h-fit rounded-[2rem] p-4 lg:sticky lg:top-6">
-      <div className="mb-4 border-b border-white/8 pb-4">
+    <aside className="glass-panel scrollbar-soft h-fit rounded-[2rem] p-5 lg:sticky lg:top-6">
+      <div className="mb-5 border-b border-white/8 pb-5">
         <p className="text-xs uppercase tracking-[0.28em] text-cyan-300/80">Student panel</p>
         <h2 className="font-display mt-3 text-2xl font-semibold text-white">Dashboard</h2>
       </div>
-      <div className="space-y-2">
+      <div className="space-y-3">
         {items.map(([id, label, Icon]) => (
           <button
             key={id}
             onClick={() => onChange(id)}
             className={cn(
-              'flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm transition',
+              'flex w-full items-center gap-3 rounded-2xl px-4 py-3.5 text-left text-sm transition',
               active === id
                 ? 'bg-cyan-400 text-slate-950'
                 : 'text-slate-300 hover:bg-white/5 hover:text-white',

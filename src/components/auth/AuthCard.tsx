@@ -9,10 +9,10 @@ interface AuthCardProps extends PropsWithChildren {
 
 export function AuthCard({ eyebrow, title, description, children }: AuthCardProps) {
   return (
-    <div className="glass-panel accent-border relative w-full max-w-5xl overflow-hidden rounded-[2rem] p-6 md:p-8">
+    <div className="glass-panel accent-border relative w-full max-w-6xl overflow-hidden rounded-[2rem] p-8 md:p-10">
       <div className="pointer-events-none absolute right-0 top-0 h-40 w-40 rounded-full bg-cyan-400/10 blur-3xl" />
-      <div className="relative z-10 grid gap-8 lg:grid-cols-[0.88fr_1.12fr]">
-        <div className="space-y-5">
+      <div className="relative z-10 grid gap-10 lg:grid-cols-[0.88fr_1.12fr]">
+        <div className="space-y-6">
           <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-400/10 text-cyan-200">
             <BookOpenCheck size={24} />
           </div>
@@ -21,7 +21,7 @@ export function AuthCard({ eyebrow, title, description, children }: AuthCardProp
             <h1 className="font-display mt-4 text-4xl font-semibold text-white">{title}</h1>
             <p className="mt-4 max-w-xl text-sm leading-8 text-slate-300">{description}</p>
           </div>
-          <div className="rounded-[1.6rem] border border-cyan-400/14 bg-cyan-400/[0.04] p-4 text-sm leading-7 text-slate-300">
+          <div className="rounded-[1.6rem] border border-cyan-400/14 bg-cyan-400/[0.04] p-5 text-sm leading-7 text-slate-300">
             Firebase handles authentication only. All academic and student profile data is stored in Supabase.
           </div>
         </div>
