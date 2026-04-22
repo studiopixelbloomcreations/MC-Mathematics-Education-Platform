@@ -13,6 +13,7 @@ import {
   calculateTheoryCoverage,
   formatEnrollmentLabel,
   getCurrentPaper,
+  getPaperLinks,
   getCurrentTheoryLesson,
   getLatestMark,
   sortClassesByDate,
@@ -40,6 +41,7 @@ export function UserDashboardPage() {
   const latestMark = getLatestMark(data.marks)
   const currentLesson = getCurrentTheoryLesson(data.lessons)
   const currentPaper = getCurrentPaper(data.papers)
+  const currentPaperLinks = getPaperLinks(currentPaper?.file_url ?? null)
 
   function handleProfileUpdated(profile: UserProfile) {
     setData((current) => ({ ...current, profile }))
@@ -115,6 +117,52 @@ export function UserDashboardPage() {
             </p>
           </div>
         </div>
+
+        {currentPaper ? (
+          <div className="glass-panel rounded-[2rem] p-6">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <p className="text-xs uppercase tracking-[0.22em] text-cyan-300/80">Current paper access</p>
+                <h3 className="font-display mt-3 text-2xl font-semibold text-white">{currentPaper.title}</h3>
+                <p className="mt-3 text-sm leading-7 text-slate-300">
+                  {currentPaper.visible_from
+                    ? `Visible from ${format(new Date(currentPaper.visible_from), 'PPP')}`
+                    : 'Available now for your grade.'}
+                </p>
+              </div>
+              <StatusPill label={currentPaper.status} tone={currentPaper.status === 'completed' ? 'success' : 'info'} />
+            </div>
+
+            <div className="mt-5 flex flex-wrap gap-3">
+              {currentPaperLinks ? (
+                <>
+                  <a
+                    href={currentPaperLinks.preview}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="glass-button inline-flex items-center gap-2 px-5 py-3 font-semibold text-slate-950"
+                  >
+                    Preview Paper
+                    <ExternalLink size={16} />
+                  </a>
+                  <a
+                    href={currentPaperLinks.download}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="glass-button-secondary inline-flex items-center gap-2 px-5 py-3 text-white"
+                  >
+                    Download Paper
+                    <ExternalLink size={16} />
+                  </a>
+                </>
+              ) : (
+                <div className="rounded-[1.4rem] border border-dashed border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-400">
+                  The paper link has not been added yet by the admin.
+                </div>
+              )}
+            </div>
+          </div>
+        ) : null}
       </div>
     ),
     statistics: (
@@ -213,6 +261,28 @@ export function UserDashboardPage() {
                 <p className="mt-2 text-sm text-slate-400">
                   {paper.visible_from ? `Visible from ${format(new Date(paper.visible_from), 'PPP')}` : 'Date not assigned'}
                 </p>
+                {getPaperLinks(paper.file_url) ? (
+                  <div className="mt-4 flex flex-wrap gap-3">
+                    <a
+                      href={getPaperLinks(paper.file_url)?.preview}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 rounded-full border border-cyan-400/20 px-4 py-2 text-sm text-cyan-200 transition hover:bg-cyan-400/10"
+                    >
+                      Preview
+                      <ExternalLink size={15} />
+                    </a>
+                    <a
+                      href={getPaperLinks(paper.file_url)?.download}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-slate-300 transition hover:bg-white/5 hover:text-white"
+                    >
+                      Download
+                      <ExternalLink size={15} />
+                    </a>
+                  </div>
+                ) : null}
               </div>
             ))}
           </div>

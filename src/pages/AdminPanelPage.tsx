@@ -211,7 +211,7 @@ export function AdminPanelPage() {
           {activeTab === 'papers' ? (
             <AdminFormCard
               title="Papers"
-              description="Upload PDFs to Supabase storage and save the resulting public URL here."
+              description="Paste a Google Drive paper link or direct file URL here. It will automatically appear for students in the matching grade dashboard."
             >
               <form
                 onSubmit={(event) => {
@@ -232,7 +232,7 @@ export function AdminPanelPage() {
                   ]}
                 />
                 <Input name="visible_from" label="Visible From" type="date" />
-                <Input name="file_url" label="Supabase Storage File URL" className="md:col-span-2" />
+                <Input name="file_url" label="Google Drive or File URL" className="md:col-span-2" />
                 <SubmitButton label="Save paper" className="md:col-span-2" />
               </form>
             </AdminFormCard>

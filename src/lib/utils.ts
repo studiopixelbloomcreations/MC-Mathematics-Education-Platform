@@ -43,6 +43,33 @@ export function toYoutubeEmbed(url: string | null) {
   return matched ? `https://www.youtube.com/embed/${matched[1]}` : null
 }
 
+export function getPaperLinks(url: string | null) {
+  if (!url) return null
+
+  const trimmed = url.trim()
+  if (!trimmed) return null
+
+  const driveMatch =
+    trimmed.match(/drive\.google\.com\/file\/d\/([^/]+)/i) ??
+    trimmed.match(/[?&]id=([^&]+)/i) ??
+    trimmed.match(/drive\.google\.com\/open\?id=([^&]+)/i)
+
+  if (driveMatch?.[1]) {
+    const fileId = driveMatch[1]
+    return {
+      original: trimmed,
+      preview: `https://drive.google.com/file/d/${fileId}/preview`,
+      download: `https://drive.google.com/uc?export=download&id=${fileId}`,
+    }
+  }
+
+  return {
+    original: trimmed,
+    preview: trimmed,
+    download: trimmed,
+  }
+}
+
 export function sortClassesByDate(classes: ManagedClass[]) {
   return [...classes].sort(
     (first, second) =>
