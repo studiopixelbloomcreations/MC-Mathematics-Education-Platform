@@ -26,6 +26,7 @@ export function AdminPanelPage() {
   const [query, setQuery] = useState('')
   const [scheduleMonth, setScheduleMonth] = useState(getMonthValue())
   const [isResetting, setIsResetting] = useState(false)
+  const [isGeneratingSchedule, setIsGeneratingSchedule] = useState(false)
   const { data } = useAdminData()
 
   const filteredUsers = useMemo(() => {
@@ -44,37 +45,49 @@ export function AdminPanelPage() {
   }, [data.classes, scheduleMonth])
 
   async function submitAnnouncement(formData: FormData) {
-    const payload = {
-      title: String(formData.get('title') ?? ''),
-      body: String(formData.get('body') ?? ''),
-      youtube_url: String(formData.get('youtube_url') ?? '') || null,
-      external_url: String(formData.get('external_url') ?? '') || null,
-      audience: String(formData.get('audience') ?? 'both') as 'public' | 'students' | 'both',
+    try {
+      const payload = {
+        title: String(formData.get('title') ?? ''),
+        body: String(formData.get('body') ?? ''),
+        youtube_url: String(formData.get('youtube_url') ?? '') || null,
+        external_url: String(formData.get('external_url') ?? '') || null,
+        audience: String(formData.get('audience') ?? 'both') as 'public' | 'students' | 'both',
+      }
+      await createAnnouncement(payload)
+      toast.success('Announcement saved')
+    } catch (error) {
+      toast.error(getErrorMessage(error, 'Announcement could not be saved'))
     }
-    await createAnnouncement(payload)
-    toast.success('Announcement saved')
   }
 
   async function submitLesson(formData: FormData) {
-    await createLesson({
-      grade: Number(formData.get('grade')),
-      lesson_name: String(formData.get('lesson_name') ?? ''),
-      status: String(formData.get('status') ?? 'not_started') as LessonStatus,
-      completion_date: String(formData.get('completion_date') ?? '') || null,
-      order_index: Number(formData.get('order_index') ?? 1),
-    })
-    toast.success('Lesson saved')
+    try {
+      await createLesson({
+        grade: Number(formData.get('grade')),
+        lesson_name: String(formData.get('lesson_name') ?? ''),
+        status: String(formData.get('status') ?? 'not_started') as LessonStatus,
+        completion_date: String(formData.get('completion_date') ?? '') || null,
+        order_index: Number(formData.get('order_index') ?? 1),
+      })
+      toast.success('Lesson saved')
+    } catch (error) {
+      toast.error(getErrorMessage(error, 'Lesson could not be saved'))
+    }
   }
 
   async function submitPaper(formData: FormData) {
-    await createPaper({
-      grade: Number(formData.get('grade')),
-      title: String(formData.get('title') ?? ''),
-      file_url: String(formData.get('file_url') ?? '') || null,
-      status: String(formData.get('status') ?? 'upcoming') as PaperStatus,
-      visible_from: String(formData.get('visible_from') ?? '') || null,
-    })
-    toast.success('Paper saved')
+    try {
+      await createPaper({
+        grade: Number(formData.get('grade')),
+        title: String(formData.get('title') ?? ''),
+        file_url: String(formData.get('file_url') ?? '') || null,
+        status: String(formData.get('status') ?? 'upcoming') as PaperStatus,
+        visible_from: String(formData.get('visible_from') ?? '') || null,
+      })
+      toast.success('Paper saved')
+    } catch (error) {
+      toast.error(getErrorMessage(error, 'Paper could not be saved'))
+    }
   }
 
   async function submitMonthlyClasses(formData: FormData) {
@@ -89,15 +102,22 @@ export function AdminPanelPage() {
       return
     }
 
-    const generated = await generateMonthlyClasses({
-      templateId,
-      monthValue,
-      venue,
-      status,
-    })
+    try {
+      setIsGeneratingSchedule(true)
+      const generated = await generateMonthlyClasses({
+        templateId,
+        monthValue,
+        venue,
+        status,
+      })
 
-    setScheduleMonth(monthValue)
-    toast.success(`${generated.length} ${template.class_name} dates generated for ${monthValue}`)
+      setScheduleMonth(monthValue)
+      toast.success(`${generated.length} ${template.class_name} dates generated for ${monthValue}`)
+    } catch (error) {
+      toast.error(getErrorMessage(error, 'Full month schedule could not be generated'))
+    } finally {
+      setIsGeneratingSchedule(false)
+    }
   }
 
   async function handleResetDashboardData() {
@@ -110,29 +130,43 @@ export function AdminPanelPage() {
       setIsResetting(true)
       await resetDashboardTestingData()
       toast.success('Dashboard testing data reset')
+    } catch (error) {
+      toast.error(getErrorMessage(error, 'Dashboard data reset failed'))
     } finally {
       setIsResetting(false)
     }
   }
 
   async function handleClassStatusChange(classId: string, status: ClassStatus) {
-    await updateClassStatus(classId, status)
-    toast.success(`Class marked as ${status}`)
+    try {
+      await updateClassStatus(classId, status)
+      toast.success(`Class marked as ${status}`)
+    } catch (error) {
+      toast.error(getErrorMessage(error, `Class status could not be changed to ${status}`))
+    }
   }
 
   async function addMark(userId: string) {
     const examName = window.prompt('Exam name')
     const mark = window.prompt('Mark')
     if (!examName || !mark) return
-    await createMark({ user_id: userId, exam_name: examName, mark: Number(mark) })
-    toast.success('Mark added')
+    try {
+      await createMark({ user_id: userId, exam_name: examName, mark: Number(mark) })
+      toast.success('Mark added')
+    } catch (error) {
+      toast.error(getErrorMessage(error, 'Mark could not be added'))
+    }
   }
 
   async function addTeacherNote(userId: string) {
     const specialNote = window.prompt('Special note from teacher')
     if (!specialNote) return
-    await saveUserProfile(userId, { special_note: specialNote })
-    toast.success('Teacher note updated')
+    try {
+      await saveUserProfile(userId, { special_note: specialNote })
+      toast.success('Teacher note updated')
+    } catch (error) {
+      toast.error(getErrorMessage(error, 'Teacher note could not be updated'))
+    }
   }
 
   return (
@@ -336,7 +370,11 @@ export function AdminPanelPage() {
                     ]}
                   />
                   <Input name="venue" label="Venue Override" required={false} placeholder="Leave empty to use template venue" />
-                  <SubmitButton label="Generate full month schedule" className="md:col-span-2" />
+                  <SubmitButton
+                    label={isGeneratingSchedule ? 'Generating full month schedule...' : 'Generate full month schedule'}
+                    className="md:col-span-2"
+                    disabled={isGeneratingSchedule}
+                  />
                 </form>
               </AdminFormCard>
 
@@ -547,10 +585,22 @@ function Select({
   )
 }
 
-function SubmitButton({ label, className }: { label: string; className?: string }) {
+function SubmitButton({
+  label,
+  className,
+  disabled = false,
+}: {
+  label: string
+  className?: string
+  disabled?: boolean
+}) {
   return (
     <div className={className}>
-      <button type="submit" className="glass-button px-5 py-3 font-semibold text-slate-950">
+      <button
+        type="submit"
+        disabled={disabled}
+        className="glass-button px-5 py-3 font-semibold text-slate-950 disabled:cursor-not-allowed disabled:opacity-60"
+      >
         {label}
       </button>
     </div>
@@ -559,4 +609,9 @@ function SubmitButton({ label, className }: { label: string; className?: string 
 
 function toTitleCase(value: string) {
   return value.charAt(0).toUpperCase() + value.slice(1)
+}
+
+function getErrorMessage(error: unknown, fallback: string) {
+  if (error instanceof Error && error.message) return error.message
+  return fallback
 }

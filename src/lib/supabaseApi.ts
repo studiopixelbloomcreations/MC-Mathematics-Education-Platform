@@ -41,6 +41,94 @@ function withFallbackIfEmpty<T>(data: T[], fallback: T[]) {
   return data.length ? data : fallback
 }
 
+type DatabaseClassStatus = ManagedClass['status'] | 'scheduled'
+
+function normalizeClassStatus(status: DatabaseClassStatus): ManagedClass['status'] {
+  if (status === 'scheduled') return 'ongoing'
+  return status
+}
+
+function normalizeManagedClass(item: ManagedClass | (Omit<ManagedClass, 'status'> & { status: DatabaseClassStatus })) {
+  return {
+    ...item,
+    status: normalizeClassStatus(item.status),
+  } as ManagedClass
+}
+
+function normalizeManagedClasses(
+  items: Array<ManagedClass | (Omit<ManagedClass, 'status'> & { status: DatabaseClassStatus })>,
+) {
+  return items.map((item) => normalizeManagedClass(item))
+}
+
+async function insertClassesWithCompatibility(classes: Array<Omit<ManagedClass, 'id'>>) {
+  if (!supabase) return []
+
+  const { data, error } = await supabase.from('classes').insert(classes).select('*')
+  if (!error) {
+    return normalizeManagedClasses((data ?? []) as Array<ManagedClass & { status: DatabaseClassStatus }>)
+  }
+
+  const shouldRetryWithScheduled =
+    classes.some((item) => item.status === 'ongoing') &&
+    (error.message.toLowerCase().includes('scheduled') ||
+      error.message.toLowerCase().includes('status') ||
+      error.code === '23514')
+
+  if (!shouldRetryWithScheduled) throw error
+
+  const legacyPayload = classes.map((item) => ({
+    ...item,
+    status: item.status === 'ongoing' ? 'scheduled' : item.status,
+  }))
+
+  const { data: legacyData, error: legacyError } = await supabase.from('classes').insert(legacyPayload).select('*')
+  if (legacyError) throw legacyError
+
+  return normalizeManagedClasses((legacyData ?? []) as Array<ManagedClass & { status: DatabaseClassStatus }>)
+}
+
+async function updateClassStatusWithCompatibility(classId: string, status: ManagedClass['status']) {
+  if (!supabase) return null
+
+  const { data, error } = await supabase
+    .from('classes')
+    .update({ status })
+    .eq('id', classId)
+    .select('*')
+    .single()
+
+  if (!error && data) {
+    return normalizeManagedClass(data as ManagedClass & { status: DatabaseClassStatus })
+  }
+
+  const canRetryWithScheduled =
+    status === 'ongoing' &&
+    error &&
+    (error.message.toLowerCase().includes('scheduled') ||
+      error.message.toLowerCase().includes('status') ||
+      error.code === '23514')
+
+  if (canRetryWithScheduled) {
+    const { data: legacyData, error: legacyError } = await supabase
+      .from('classes')
+      .update({ status: 'scheduled' })
+      .eq('id', classId)
+      .select('*')
+      .single()
+
+    if (legacyError) throw legacyError
+    return normalizeManagedClass(legacyData as ManagedClass & { status: DatabaseClassStatus })
+  }
+
+  if (status === 'completed' && error?.code === '23514') {
+    throw new Error('The database still uses the old class status rules. Please run the updated Supabase schema before using completed status.')
+  }
+
+  if (error) throw error
+  return null
+}
+
 export async function fetchLandingPageData(): Promise<LandingPageData> {
   if (!hasSupabaseConfig || !supabase) return fallbackLandingData
 
@@ -76,7 +164,10 @@ export async function fetchLandingPageData(): Promise<LandingPageData> {
       announcements as Announcement[],
       fallbackLandingData.announcements,
     ),
-    classes: withFallbackIfEmpty(classes as ManagedClass[], fallbackLandingData.classes),
+    classes: withFallbackIfEmpty(
+      normalizeManagedClasses(classes as Array<ManagedClass & { status: DatabaseClassStatus }>),
+      fallbackLandingData.classes,
+    ),
     hallOfFame: withFallbackIfEmpty(
       hallOfFame as HallOfFameEntry[],
       fallbackLandingData.hallOfFame,
@@ -166,7 +257,7 @@ export async function fetchDashboardData(userId: string): Promise<DashboardData>
   return {
     profile: profile as UserProfile,
     marks: marks as MarkEntry[],
-    classes: classes as ManagedClass[],
+    classes: normalizeManagedClasses(classes as Array<ManagedClass & { status: DatabaseClassStatus }>),
     announcements: announcements as Announcement[],
     lessons: lessons as Lesson[],
     papers: papers as Paper[],
@@ -192,7 +283,7 @@ export async function fetchAdminData(): Promise<AdminData> {
     lessons: lessons as Lesson[],
     papers: papers as Paper[],
     announcements: announcements as Announcement[],
-    classes: classes as ManagedClass[],
+    classes: normalizeManagedClasses(classes as Array<ManagedClass & { status: DatabaseClassStatus }>),
     hallOfFame: hallOfFame as HallOfFameEntry[],
     feedback: feedback as FeedbackEntry[],
     teamMembers: teamMembers as TeamMember[],
@@ -261,8 +352,8 @@ export async function createLesson(payload: Omit<Lesson, 'id'>) {
 
 export async function createClass(payload: Omit<ManagedClass, 'id'>) {
   if (!hasSupabaseConfig || !supabase) return null
-  const { data } = await supabase.from('classes').insert(payload).select('*').single()
-  return data as ManagedClass | null
+  const inserted = await insertClassesWithCompatibility([payload])
+  return inserted[0] ?? null
 }
 
 export async function generateMonthlyClasses(payload: {
@@ -303,22 +394,12 @@ export async function generateMonthlyClasses(payload: {
 
   if (deleteError) throw deleteError
 
-  const { data, error } = await supabase.from('classes').insert(generatedClasses).select('*')
-  if (error) throw error
-  return (data ?? []) as ManagedClass[]
+  return insertClassesWithCompatibility(generatedClasses)
 }
 
 export async function updateClassStatus(classId: string, status: ManagedClass['status']) {
   if (!hasSupabaseConfig || !supabase) return null
-  const { data, error } = await supabase
-    .from('classes')
-    .update({ status })
-    .eq('id', classId)
-    .select('*')
-    .single()
-
-  if (error) throw error
-  return data as ManagedClass | null
+  return updateClassStatusWithCompatibility(classId, status)
 }
 
 export async function resetDashboardTestingData() {
