@@ -4,7 +4,7 @@ import { useAuth } from '../../providers/auth-context'
 import heroAsset from '../../assets/hero.png'
 
 export function HeroSection() {
-  const { loginWithGoogle, profile } = useAuth()
+  const { profile } = useAuth()
 
   return (
     <section id="hero" className="relative px-4 pb-16 pt-10 md:px-6 lg:px-8">
@@ -29,13 +29,13 @@ export function HeroSection() {
           </div>
 
           <div className="flex flex-col gap-4 sm:flex-row">
-            <button
-              onClick={() => void loginWithGoogle()}
+            <Link
+              to="/login"
               className="glass-button inline-flex items-center justify-center gap-2 px-6 py-3 font-semibold text-slate-950"
             >
-              Sign Up with Google
+              Log In
               <ArrowRight size={18} />
-            </button>
+            </Link>
             <Link
               to={profile ? '/userdashboard' : '/landingpage#classes'}
               className="glass-button-secondary inline-flex items-center justify-center gap-2 px-6 py-3 font-semibold text-white"
@@ -116,7 +116,7 @@ export function HeroSection() {
                   </div>
                 </div>
                 <p className="mt-4 text-sm leading-7 text-slate-300">
-                  Sign up with Google to unlock the student portal, while the public site stays focused on the institute,
+                  Log in with Google to unlock the student portal, while the public site stays focused on the institute,
                   classes, and student achievements.
                 </p>
               </div>

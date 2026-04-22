@@ -1,4 +1,4 @@
-import { Menu, X } from 'lucide-react'
+import { LogIn, Menu, X } from 'lucide-react'
 import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { useAuth } from '../../providers/auth-context'
@@ -7,7 +7,7 @@ import { ThemeToggle } from './ThemeToggle'
 
 export function TopNav() {
   const [open, setOpen] = useState(false)
-  const { profile, loginWithGoogle, logout } = useAuth()
+  const { profile, logout } = useAuth()
 
   const links = [
     { label: 'Home', href: '#hero' },
@@ -54,12 +54,13 @@ export function TopNav() {
               <Link to="/signup" className="text-sm text-slate-200 transition hover:text-white">
                 Sign Up
               </Link>
-              <button
-                onClick={() => void loginWithGoogle()}
-                className="glass-button px-4 py-2 text-sm font-semibold text-slate-950"
+              <Link
+                to="/login"
+                className="glass-button inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-slate-950"
               >
-                Sign Up with Google
-              </button>
+                <LogIn size={16} />
+                Log In
+              </Link>
             </div>
           )}
         </nav>
@@ -89,29 +90,24 @@ export function TopNav() {
                 {link.label}
               </a>
             ))}
-            <button
-              onClick={() => {
-                setOpen(false)
-                if (profile) {
+            {profile ? (
+              <button
+                onClick={() => {
+                  setOpen(false)
                   void logout()
-                } else {
-                  void loginWithGoogle()
-                }
-              }}
-              className={cn(
-                'px-3 py-2 text-sm font-semibold',
-                profile ? 'glass-button-secondary text-cyan-200' : 'glass-button text-slate-950',
-              )}
-            >
-              {profile ? 'Log out' : 'Sign Up with Google'}
-            </button>
+                }}
+                className={cn('glass-button-secondary px-3 py-2 text-sm font-semibold text-cyan-200')}
+              >
+                Log out
+              </button>
+            ) : null}
             {!profile ? (
               <Link
                 to="/login"
                 onClick={() => setOpen(false)}
-                className="glass-button-secondary px-3 py-2 text-center text-sm text-slate-300"
+                className="glass-button px-3 py-2 text-center text-sm font-semibold text-slate-950"
               >
-                Go to Login
+                Log In
               </Link>
             ) : null}
           </div>
