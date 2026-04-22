@@ -74,14 +74,14 @@ export function OnboardingCard({ profile, onComplete }: OnboardingCardProps) {
             required
             value={form.full_name}
             onChange={(event) => setForm((current) => ({ ...current, full_name: event.target.value }))}
-            className="w-full rounded-2xl border border-white/8 bg-slate-950/55 px-4 py-3 text-white outline-none transition focus:border-cyan-300/35"
+            className="glass-input px-4 py-3"
           />
         </Field>
         <Field label="Grade">
           <select
             value={form.grade}
             onChange={(event) => setForm((current) => ({ ...current, grade: event.target.value }))}
-            className="w-full rounded-2xl border border-white/8 bg-slate-950/55 px-4 py-3 text-white outline-none transition focus:border-cyan-300/35"
+            className="glass-select px-4 py-3"
           >
             {[6, 7, 8, 9, 10, 11].map((grade) => (
               <option key={grade} value={grade}>
@@ -98,7 +98,7 @@ export function OnboardingCard({ profile, onComplete }: OnboardingCardProps) {
             max={30}
             value={form.age}
             onChange={(event) => setForm((current) => ({ ...current, age: event.target.value }))}
-            className="w-full rounded-2xl border border-white/8 bg-slate-950/55 px-4 py-3 text-white outline-none transition focus:border-cyan-300/35"
+            className="glass-input px-4 py-3"
           />
         </Field>
         <Field label="Enrollment">
@@ -107,7 +107,7 @@ export function OnboardingCard({ profile, onComplete }: OnboardingCardProps) {
             onChange={(event) =>
               setForm((current) => ({ ...current, enrollment_type: event.target.value as EnrollmentType }))
             }
-            className="w-full rounded-2xl border border-white/8 bg-slate-950/55 px-4 py-3 text-white outline-none transition focus:border-cyan-300/35"
+            className="glass-select px-4 py-3"
           >
             <option value="theory">Theory only</option>
             <option value="paper">Paper only</option>
@@ -120,7 +120,7 @@ export function OnboardingCard({ profile, onComplete }: OnboardingCardProps) {
             rows={3}
             value={form.address}
             onChange={(event) => setForm((current) => ({ ...current, address: event.target.value }))}
-            className="w-full rounded-2xl border border-white/8 bg-slate-950/55 px-4 py-3 text-white outline-none transition focus:border-cyan-300/35"
+            className="glass-textarea px-4 py-3"
           />
         </Field>
         <Field label="Phone Number">
@@ -128,7 +128,7 @@ export function OnboardingCard({ profile, onComplete }: OnboardingCardProps) {
             required
             value={form.phone_number}
             onChange={(event) => setForm((current) => ({ ...current, phone_number: event.target.value }))}
-            className="w-full rounded-2xl border border-white/8 bg-slate-950/55 px-4 py-3 text-white outline-none transition focus:border-cyan-300/35"
+            className="glass-input px-4 py-3"
           />
         </Field>
         <div className="rounded-[1.6rem] border border-white/8 bg-white/[0.03] p-4">
@@ -147,7 +147,7 @@ export function OnboardingCard({ profile, onComplete }: OnboardingCardProps) {
               value={form.whatsapp_number}
               onChange={(event) => setForm((current) => ({ ...current, whatsapp_number: event.target.value }))}
               placeholder="WhatsApp Number"
-              className="mt-4 w-full rounded-2xl border border-white/8 bg-slate-950/55 px-4 py-3 text-white outline-none transition focus:border-cyan-300/35"
+              className="glass-input mt-4 px-4 py-3"
             />
           ) : null}
         </div>
@@ -159,7 +159,7 @@ export function OnboardingCard({ profile, onComplete }: OnboardingCardProps) {
           <button
             type="submit"
             disabled={submitting}
-            className="rounded-full bg-cyan-400 px-5 py-3 font-semibold text-slate-950 transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60"
+            className="glass-button px-5 py-3 font-semibold text-slate-950 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {submitting ? 'Saving...' : 'Save profile'}
           </button>

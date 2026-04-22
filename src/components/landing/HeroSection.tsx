@@ -31,14 +31,14 @@ export function HeroSection() {
           <div className="flex flex-col gap-4 sm:flex-row">
             <button
               onClick={() => void loginWithGoogle()}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-cyan-400 px-6 py-3 font-semibold text-slate-950 transition hover:scale-[1.02] hover:bg-cyan-300"
+              className="glass-button inline-flex items-center justify-center gap-2 px-6 py-3 font-semibold text-slate-950"
             >
               Sign Up with Google
               <ArrowRight size={18} />
             </button>
             <Link
               to={profile ? '/userdashboard' : '/landingpage#classes'}
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-white/10 px-6 py-3 font-semibold text-white transition hover:border-cyan-300/40 hover:bg-white/5"
+              className="glass-button-secondary inline-flex items-center justify-center gap-2 px-6 py-3 font-semibold text-white"
             >
               View Classes
             </Link>

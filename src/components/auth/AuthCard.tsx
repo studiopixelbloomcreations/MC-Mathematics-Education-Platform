@@ -10,8 +10,8 @@ interface AuthCardProps extends PropsWithChildren {
 export function AuthCard({ eyebrow, title, description, children }: AuthCardProps) {
   return (
     <div className="glass-panel accent-border relative w-full max-w-5xl overflow-hidden rounded-[2rem] p-6 md:p-8">
-      <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-cyan-400/10 blur-3xl" />
-      <div className="grid gap-8 lg:grid-cols-[0.88fr_1.12fr]">
+      <div className="pointer-events-none absolute right-0 top-0 h-40 w-40 rounded-full bg-cyan-400/10 blur-3xl" />
+      <div className="relative z-10 grid gap-8 lg:grid-cols-[0.88fr_1.12fr]">
         <div className="space-y-5">
           <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-400/10 text-cyan-200">
             <BookOpenCheck size={24} />

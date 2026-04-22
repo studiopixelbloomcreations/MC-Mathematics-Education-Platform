@@ -28,7 +28,7 @@ export function ProfileSettingsCard({ profile, onUpdated }: ProfileSettingsCardP
 
   return (
     <div className="grid gap-6 xl:grid-cols-[1fr_0.72fr]">
-      <form onSubmit={handleSubmit} className="glass-panel rounded-[2rem] p-6">
+      <form onSubmit={handleSubmit} className="glass-panel accent-border rounded-[2rem] p-6">
         <h3 className="font-display text-2xl font-semibold text-white">Profile settings</h3>
         <p className="mt-3 text-sm leading-7 text-slate-300">Update your Supabase profile information.</p>
         <div className="mt-6 grid gap-4 md:grid-cols-2">
@@ -44,7 +44,7 @@ export function ProfileSettingsCard({ profile, onUpdated }: ProfileSettingsCardP
                 onChange={(event) =>
                   setForm((current) => ({ ...current, [key]: event.target.value }))
                 }
-                className="w-full rounded-2xl border border-white/8 bg-slate-950/55 px-4 py-3 text-white outline-none transition focus:border-cyan-300/35"
+                className="glass-input px-4 py-3"
               />
             </label>
           ))}
@@ -54,19 +54,19 @@ export function ProfileSettingsCard({ profile, onUpdated }: ProfileSettingsCardP
               rows={3}
               value={form.address}
               onChange={(event) => setForm((current) => ({ ...current, address: event.target.value }))}
-              className="w-full rounded-2xl border border-white/8 bg-slate-950/55 px-4 py-3 text-white outline-none transition focus:border-cyan-300/35"
+              className="glass-textarea px-4 py-3"
             />
           </label>
         </div>
         <button
           type="submit"
-          className="mt-6 rounded-full bg-cyan-400 px-5 py-3 font-semibold text-slate-950 transition hover:scale-[1.02]"
+          className="glass-button mt-6 px-5 py-3 font-semibold text-slate-950"
         >
           Save changes
         </button>
       </form>
 
-      <div className="glass-panel rounded-[2rem] p-6">
+      <div className="glass-panel accent-border rounded-[2rem] p-6">
         <h3 className="font-display text-2xl font-semibold text-white">UI customization</h3>
         <div className="mt-6 space-y-5">
           <div>
@@ -76,10 +76,10 @@ export function ProfileSettingsCard({ profile, onUpdated }: ProfileSettingsCardP
                 <button
                   key={mode}
                   onClick={() => setTheme(mode)}
-                  className={`rounded-full px-4 py-2 text-sm font-semibold ${
+                  className={`px-4 py-2 text-sm font-semibold ${
                     theme === mode
-                      ? 'bg-cyan-400 text-slate-950'
-                      : 'border border-white/10 text-slate-300'
+                      ? 'glass-button text-slate-950'
+                      : 'glass-button-secondary text-slate-300'
                   }`}
                 >
                   {mode}
@@ -92,7 +92,7 @@ export function ProfileSettingsCard({ profile, onUpdated }: ProfileSettingsCardP
             <select
               value={customization}
               onChange={(event) => setCustomization(event.target.value)}
-              className="mt-3 w-full rounded-2xl border border-white/8 bg-slate-950/55 px-4 py-3 text-white outline-none"
+              className="glass-select mt-3 px-4 py-3"
             >
               <option>Neon Focus</option>
               <option>Blue Matrix</option>

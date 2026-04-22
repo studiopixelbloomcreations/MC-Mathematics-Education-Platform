@@ -64,11 +64,11 @@ export function ParentLockCard({ profile, onUpdated }: ParentLockCardProps) {
             placeholder="Enter parent password"
             value={unlockAttempt}
             onChange={(event) => setUnlockAttempt(event.target.value)}
-            className="mt-4 w-full rounded-2xl border border-white/8 bg-slate-950/55 px-4 py-3 text-white outline-none"
+            className="glass-input mt-4 px-4 py-3"
           />
           <button
             onClick={unlock}
-            className="mt-4 rounded-full bg-cyan-400 px-5 py-3 font-semibold text-slate-950"
+            className="glass-button mt-4 px-5 py-3 font-semibold text-slate-950"
           >
             Unlock now
           </button>
@@ -81,7 +81,7 @@ export function ParentLockCard({ profile, onUpdated }: ParentLockCardProps) {
               type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              className="w-full rounded-2xl border border-white/8 bg-slate-950/55 px-4 py-3 text-white outline-none"
+              className="glass-input px-4 py-3"
             />
           </label>
           <label className="block">
@@ -89,7 +89,7 @@ export function ParentLockCard({ profile, onUpdated }: ParentLockCardProps) {
             <select
               value={duration}
               onChange={(event) => setDuration(event.target.value)}
-              className="w-full rounded-2xl border border-white/8 bg-slate-950/55 px-4 py-3 text-white outline-none"
+              className="glass-select px-4 py-3"
             >
               <option value="15">15 minutes</option>
               <option value="30">30 minutes</option>
@@ -99,7 +99,7 @@ export function ParentLockCard({ profile, onUpdated }: ParentLockCardProps) {
           <div className="md:col-span-2">
             <button
               onClick={() => void activateLock()}
-              className="rounded-full bg-cyan-400 px-5 py-3 font-semibold text-slate-950"
+              className="glass-button px-5 py-3 font-semibold text-slate-950"
             >
               Enable parent lock
             </button>

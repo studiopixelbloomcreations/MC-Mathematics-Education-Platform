@@ -292,7 +292,7 @@ export function AdminPanelPage() {
                     value={query}
                     onChange={(event) => setQuery(event.target.value)}
                     placeholder="Search students"
-                    className="w-full rounded-full border border-white/10 bg-slate-950/55 py-3 pl-11 pr-4 text-white outline-none"
+                    className="glass-input py-3 pl-11 pr-4"
                   />
                 </label>
               </div>
@@ -352,7 +352,7 @@ function Input({
         name={name}
         type={type}
         required={type !== 'date' && name !== 'youtube_url' && name !== 'external_url' && name !== 'file_url'}
-        className="w-full rounded-2xl border border-white/8 bg-slate-950/55 px-4 py-3 text-white outline-none"
+        className="glass-input px-4 py-3"
       />
     </label>
   )
@@ -366,7 +366,7 @@ function TextArea({ label, name, className }: { label: string; name: string; cla
         name={name}
         rows={4}
         required
-        className="w-full rounded-2xl border border-white/8 bg-slate-950/55 px-4 py-3 text-white outline-none"
+        className="glass-textarea px-4 py-3"
       />
     </label>
   )
@@ -384,7 +384,7 @@ function Select({
   return (
     <label>
       <span className="mb-3 block text-sm text-slate-300">{label}</span>
-      <select name={name} className="w-full rounded-2xl border border-white/8 bg-slate-950/55 px-4 py-3 text-white outline-none">
+      <select name={name} className="glass-select px-4 py-3">
         {options.map(([value, title]) => (
           <option key={value} value={value}>
             {title}
@@ -398,7 +398,7 @@ function Select({
 function SubmitButton({ label, className }: { label: string; className?: string }) {
   return (
     <div className={className}>
-      <button type="submit" className="rounded-full bg-cyan-400 px-5 py-3 font-semibold text-slate-950">
+      <button type="submit" className="glass-button px-5 py-3 font-semibold text-slate-950">
         {label}
       </button>
     </div>

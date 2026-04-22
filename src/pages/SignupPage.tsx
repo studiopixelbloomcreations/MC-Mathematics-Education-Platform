@@ -127,14 +127,14 @@ export function SignupPage() {
                 required
                 value={form.full_name}
                 onChange={(event) => setForm((current) => ({ ...current, full_name: event.target.value }))}
-                className="w-full rounded-2xl border border-white/8 bg-slate-950/55 px-4 py-3 text-white outline-none"
+                className="glass-input px-4 py-3"
               />
             </Field>
             <Field label="Grade">
               <select
                 value={form.grade}
                 onChange={(event) => setForm((current) => ({ ...current, grade: event.target.value }))}
-                className="w-full rounded-2xl border border-white/8 bg-slate-950/55 px-4 py-3 text-white outline-none"
+                className="glass-select px-4 py-3"
               >
                 {[6, 7, 8, 9, 10, 11].map((grade) => (
                   <option key={grade} value={grade}>
@@ -151,7 +151,7 @@ export function SignupPage() {
                 max={30}
                 value={form.age}
                 onChange={(event) => setForm((current) => ({ ...current, age: event.target.value }))}
-                className="w-full rounded-2xl border border-white/8 bg-slate-950/55 px-4 py-3 text-white outline-none"
+                className="glass-input px-4 py-3"
               />
             </Field>
             <Field label="Enrollment">
@@ -160,7 +160,7 @@ export function SignupPage() {
                 onChange={(event) =>
                   setForm((current) => ({ ...current, enrollment_type: event.target.value as EnrollmentType }))
                 }
-                className="w-full rounded-2xl border border-white/8 bg-slate-950/55 px-4 py-3 text-white outline-none"
+                className="glass-select px-4 py-3"
               >
                 <option value="theory">Theory only</option>
                 <option value="paper">Paper only</option>
@@ -173,7 +173,7 @@ export function SignupPage() {
                 rows={3}
                 value={form.address}
                 onChange={(event) => setForm((current) => ({ ...current, address: event.target.value }))}
-                className="w-full rounded-2xl border border-white/8 bg-slate-950/55 px-4 py-3 text-white outline-none"
+                className="glass-textarea px-4 py-3"
               />
             </Field>
             <Field label="Phone Number">
@@ -181,7 +181,7 @@ export function SignupPage() {
                 required
                 value={form.phone_number}
                 onChange={(event) => setForm((current) => ({ ...current, phone_number: event.target.value }))}
-                className="w-full rounded-2xl border border-white/8 bg-slate-950/55 px-4 py-3 text-white outline-none"
+                className="glass-input px-4 py-3"
               />
             </Field>
             <div className="rounded-[1.4rem] border border-white/8 bg-white/[0.03] p-4">
@@ -200,7 +200,7 @@ export function SignupPage() {
                   value={form.whatsapp_number}
                   onChange={(event) => setForm((current) => ({ ...current, whatsapp_number: event.target.value }))}
                   placeholder="WhatsApp Number"
-                  className="mt-4 w-full rounded-2xl border border-white/8 bg-slate-950/55 px-4 py-3 text-white outline-none"
+                  className="glass-input mt-4 px-4 py-3"
                 />
               ) : null}
             </div>
@@ -213,7 +213,7 @@ export function SignupPage() {
                 <input
                   disabled
                   placeholder="Will come from Google Sign-In"
-                  className="w-full cursor-not-allowed rounded-2xl border border-white/8 bg-slate-950/55 px-4 py-3 text-slate-500 outline-none"
+                  className="glass-input cursor-not-allowed px-4 py-3 text-slate-500"
                 />
               </label>
               <label className="block">
@@ -222,7 +222,7 @@ export function SignupPage() {
                   disabled
                   type="password"
                   placeholder="Manual auth unavailable"
-                  className="w-full cursor-not-allowed rounded-2xl border border-white/8 bg-slate-950/55 px-4 py-3 text-slate-500 outline-none"
+                  className="glass-input cursor-not-allowed px-4 py-3 text-slate-500"
                 />
               </label>
             </div>
@@ -233,7 +233,7 @@ export function SignupPage() {
             <button
               type="button"
               onClick={() => void handleGoogleSignup()}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-cyan-400 px-6 py-3 font-semibold text-slate-950 transition hover:scale-[1.02]"
+              className="glass-button inline-flex items-center justify-center gap-2 px-6 py-3 font-semibold text-slate-950"
             >
               Continue with Google
               <ArrowRight size={18} />
@@ -241,7 +241,7 @@ export function SignupPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="rounded-full border border-white/10 px-6 py-3 font-semibold text-white transition hover:bg-white/5 disabled:opacity-60"
+              className="glass-button-secondary px-6 py-3 font-semibold text-white disabled:opacity-60"
             >
               {submitting ? 'Saving...' : 'Complete Signup'}
             </button>

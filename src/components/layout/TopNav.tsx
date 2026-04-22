@@ -19,7 +19,7 @@ export function TopNav() {
 
   return (
     <header className="sticky top-0 z-40 mx-auto w-full px-4 pt-4 md:px-6 lg:px-8">
-      <div className="glass-panel mx-auto flex max-w-7xl items-center justify-between rounded-full px-5 py-3">
+      <div className="glass-panel accent-border mx-auto flex max-w-7xl items-center justify-between rounded-full px-5 py-3">
         <Link to="/landingpage" className="flex items-center gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-cyan-400/10 text-cyan-300 accent-border">
             <span className="font-display text-lg font-bold">MC</span>
@@ -44,7 +44,7 @@ export function TopNav() {
               </NavLink>
               <button
                 onClick={() => void logout()}
-                className="rounded-full border border-cyan-400/30 px-4 py-2 text-sm text-cyan-200 transition hover:bg-cyan-400/10"
+                className="glass-button-secondary px-4 py-2 text-sm text-cyan-200"
               >
                 Log out
               </button>
@@ -56,7 +56,7 @@ export function TopNav() {
               </Link>
               <button
                 onClick={() => void loginWithGoogle()}
-                className="rounded-full bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:scale-[1.02] hover:bg-cyan-300"
+                className="glass-button px-4 py-2 text-sm font-semibold text-slate-950"
               >
                 Sign Up with Google
               </button>
@@ -99,8 +99,8 @@ export function TopNav() {
                 }
               }}
               className={cn(
-                'rounded-2xl px-3 py-2 text-sm font-semibold',
-                profile ? 'border border-cyan-400/20 text-cyan-200' : 'bg-cyan-400 text-slate-950',
+                'px-3 py-2 text-sm font-semibold',
+                profile ? 'glass-button-secondary text-cyan-200' : 'glass-button text-slate-950',
               )}
             >
               {profile ? 'Log out' : 'Sign Up with Google'}
@@ -109,7 +109,7 @@ export function TopNav() {
               <Link
                 to="/login"
                 onClick={() => setOpen(false)}
-                className="rounded-2xl border border-white/10 px-3 py-2 text-center text-sm text-slate-300"
+                className="glass-button-secondary px-3 py-2 text-center text-sm text-slate-300"
               >
                 Go to Login
               </Link>

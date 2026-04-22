@@ -242,7 +242,7 @@ export function UserDashboardPage() {
             <StatusPill label={`Grade ${data.profile.grade ?? '-'}`} tone="info" />
             <button
               onClick={() => void logout()}
-              className="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-slate-300 transition hover:bg-white/5 hover:text-white"
+              className="glass-button-secondary inline-flex items-center gap-2 px-4 py-2 text-sm text-slate-300"
             >
               <LogOut size={16} />
               Log out

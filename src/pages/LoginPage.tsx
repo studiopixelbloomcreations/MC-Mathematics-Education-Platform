@@ -22,7 +22,7 @@ export function LoginPage() {
         <div className="rounded-[1.8rem] border border-white/8 bg-slate-950/45 p-6">
           <button
             onClick={() => void loginWithGoogle()}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-cyan-400 px-6 py-3 font-semibold text-slate-950 transition hover:scale-[1.02] hover:bg-cyan-300"
+            className="glass-button inline-flex w-full items-center justify-center gap-2 px-6 py-3 font-semibold text-slate-950"
           >
             Continue with Google
             <ArrowRight size={18} />
@@ -34,7 +34,7 @@ export function LoginPage() {
               <input
                 disabled
                 placeholder="Manual auth currently unavailable"
-                className="w-full cursor-not-allowed rounded-2xl border border-white/8 bg-slate-950/55 px-4 py-3 text-slate-500 outline-none"
+                className="glass-input cursor-not-allowed px-4 py-3 text-slate-500"
               />
             </label>
             <label className="block">
@@ -43,7 +43,7 @@ export function LoginPage() {
                 disabled
                 type="password"
                 placeholder="Use Google Sign-In"
-                className="w-full cursor-not-allowed rounded-2xl border border-white/8 bg-slate-950/55 px-4 py-3 text-slate-500 outline-none"
+                className="glass-input cursor-not-allowed px-4 py-3 text-slate-500"
               />
             </label>
           </div>
