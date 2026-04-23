@@ -1,5 +1,5 @@
 import { format } from 'date-fns'
-import { RotateCcw, Search, ShieldCheck, Trash2 } from 'lucide-react'
+import { RotateCcw, Search, ShieldCheck, Trash2, Upload, ImageIcon } from 'lucide-react'
 import { useMemo, useState, type ChangeEventHandler } from 'react'
 import toast from 'react-hot-toast'
 import { AdminFormCard } from '../components/admin/AdminFormCard'
@@ -10,20 +10,23 @@ import { useCurrentTime } from '../hooks/useCurrentTime'
 import { useAdminData } from '../hooks/useAdminData'
 import {
   createAnnouncement,
+  createHallOfFameEntry,
   createLesson,
   createMark,
   createPaper,
+  deleteHallOfFameEntry,
   deleteUser,
   ensureCurrentMonthClasses,
   generateMonthlyClasses,
   resetDashboardTestingData,
   saveUserProfile,
   updateClassStatus,
+  uploadHallOfFameImage,
 } from '../lib/supabaseApi'
 import { formatClassStatusLabel, getComputedClassStatus, getClassStatusTone } from '../lib/utils'
 import type { ClassStatus, LessonStatus, PaperStatus } from '../types/models'
 
-const tabs = ['overview', 'lessons', 'papers', 'announcements', 'users', 'classes'] as const
+const tabs = ['overview', 'lessons', 'papers', 'announcements', 'users', 'classes', 'hall-of-fame'] as const
 
 export function AdminPanelPage() {
   const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>('overview')
@@ -595,6 +598,13 @@ export function AdminPanelPage() {
               </div>
             </div>
           ) : null}
+
+          {activeTab === 'hall-of-fame' ? (
+            <HallOfFameSection
+              entries={data.hallOfFame}
+              onRefresh={refresh}
+            />
+          ) : null}
         </div>
       </div>
     </div>
@@ -705,4 +715,214 @@ function SubmitButton({
 function getErrorMessage(error: unknown, fallback: string) {
   if (error instanceof Error && error.message) return error.message
   return fallback
+}
+
+function getInitials(name: string) {
+  const parts = name.trim().split(/\s+/)
+  const first = parts[0]?.[0] ?? ''
+  const last = parts.length > 1 ? parts[parts.length - 1]![0] ?? '' : ''
+  return (first + last).toUpperCase()
+}
+
+function HallOfFameSection({
+  entries,
+  onRefresh,
+}: {
+  entries: Array<{ id: string; category: string; student_name: string; image_url: string; achievement: string; display_order: number }>
+  onRefresh: () => Promise<unknown>
+}) {
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const alEntries = entries.filter((e) => e.category === 'A/L').sort((a, b) => a.display_order - b.display_order)
+  const olEntries = entries.filter((e) => e.category === 'O/L').sort((a, b) => a.display_order - b.display_order)
+
+  function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0]
+    if (!file) return
+    setImageFile(file)
+    const reader = new FileReader()
+    reader.onload = (e) => setImagePreview(e.target?.result as string)
+    reader.readAsDataURL(file)
+  }
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const formData = new FormData(event.currentTarget)
+    const studentName = String(formData.get('student_name') ?? '').trim()
+    const category = String(formData.get('category') ?? 'O/L') as 'A/L' | 'O/L'
+    const achievement = String(formData.get('achievement') ?? '').trim()
+    const displayOrder = Number(formData.get('display_order') ?? 1)
+
+    if (!studentName) {
+      toast.error('Student name is required')
+      return
+    }
+
+    try {
+      setIsSubmitting(true)
+      let imageUrl: string
+
+      if (imageFile) {
+        const uploaded = await uploadHallOfFameImage(imageFile)
+        imageUrl = uploaded ?? `https://ui-avatars.com/api/?name=${encodeURIComponent(studentName)}&background=0f172a&color=67e8f9&size=400`
+      } else {
+        imageUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(studentName)}&background=0f172a&color=67e8f9&size=400`
+      }
+
+      await createHallOfFameEntry({
+        category,
+        student_name: studentName,
+        image_url: imageUrl,
+        achievement: achievement || `Recognized for outstanding ${category} mathematics performance.`,
+        display_order: displayOrder,
+      })
+
+      await onRefresh()
+      toast.success(`${studentName} added to Hall of Fame`)
+      event.currentTarget.reset()
+      setImageFile(null)
+      setImagePreview(null)
+    } catch (error) {
+      toast.error(getErrorMessage(error, 'Could not add Hall of Fame entry'))
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  async function handleDelete(id: string, name: string) {
+    if (!window.confirm(`Remove "${name}" from the Hall of Fame?`)) return
+    try {
+      await deleteHallOfFameEntry(id)
+      await onRefresh()
+      toast.success(`${name} removed from Hall of Fame`)
+    } catch (error) {
+      toast.error(getErrorMessage(error, 'Could not remove entry'))
+    }
+  }
+
+  function renderEntryCard(entry: typeof entries[number]) {
+    const initials = getInitials(entry.student_name)
+    const hasImage = entry.image_url && !entry.image_url.includes('ui-avatars.com')
+
+    return (
+      <article key={entry.id} className="rounded-[1.6rem] border border-white/8 bg-white/[0.03] p-4">
+        <div className="flex items-center gap-4">
+          {hasImage ? (
+            <img
+              src={entry.image_url}
+              alt={entry.student_name}
+              className="h-12 w-12 rounded-full object-cover border border-white/10"
+            />
+          ) : (
+            <div className="flex h-12 w-12 items-center justify-center rounded-full border border-cyan-400/20 bg-cyan-400/10 text-sm font-bold text-cyan-200">
+              {initials}
+            </div>
+          )}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between gap-3">
+              <p className="font-medium text-white truncate">{entry.student_name}</p>
+              <StatusPill label={entry.category} tone={entry.category === 'A/L' ? 'success' : 'info'} />
+            </div>
+            <p className="mt-1 text-xs text-slate-400 truncate">{entry.achievement}</p>
+          </div>
+          <button
+            onClick={() => void handleDelete(entry.id, entry.student_name)}
+            className="ml-2 inline-flex items-center gap-1 rounded-full border border-rose-400/30 bg-rose-500/10 px-3 py-1.5 text-xs font-semibold text-rose-200 transition hover:bg-rose-500/20"
+          >
+            <Trash2 size={12} />
+            Remove
+          </button>
+        </div>
+      </article>
+    )
+  }
+
+  return (
+    <>
+      <AdminFormCard
+        title="Add to Hall of Fame"
+        description="Add students who excelled in A/L or O/L mathematics. Upload a photo or use auto-generated initials avatar."
+      >
+        <form onSubmit={(e) => void handleSubmit(e)} className="grid gap-4 md:grid-cols-2">
+          <Input name="student_name" label="Student Name" />
+          <Select
+            name="category"
+            label="Category"
+            options={[
+              ['A/L', 'A/L Student'],
+              ['O/L', 'O/L Student'],
+            ]}
+          />
+          <Input name="achievement" label="Achievement" required={false} placeholder="Auto-filled if left empty" />
+          <Input name="display_order" label="Display Order" type="number" defaultValue="1" />
+          <div className="md:col-span-2">
+            <span className="mb-3 block text-sm text-slate-300">Student Photo</span>
+            <label className="group flex cursor-pointer items-center gap-3 rounded-[1.4rem] border border-dashed border-white/16 bg-white/[0.03] p-4 transition hover:border-cyan-400/30 hover:bg-cyan-400/[0.04]">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="hidden"
+              />
+              {imagePreview ? (
+                <img src={imagePreview} alt="Preview" className="h-14 w-14 rounded-full object-cover border border-white/10" />
+              ) : (
+                <div className="flex h-14 w-14 items-center justify-center rounded-full border border-white/10 bg-white/[0.05]">
+                  <ImageIcon size={22} className="text-slate-500" />
+                </div>
+              )}
+              <div>
+                <p className="text-sm font-medium text-white">
+                  {imageFile ? imageFile.name : 'Click to upload a photo'}
+                </p>
+                <p className="mt-1 text-xs text-slate-400">
+                  {imageFile ? 'Click to change' : 'JPG, PNG, WebP. If skipped, initials avatar will be used.'}
+                </p>
+              </div>
+              <Upload size={18} className="ml-auto text-slate-500 group-hover:text-cyan-300 transition" />
+            </label>
+          </div>
+          <SubmitButton
+            label={isSubmitting ? 'Adding to Hall of Fame...' : 'Add to Hall of Fame'}
+            className="md:col-span-2"
+            disabled={isSubmitting}
+          />
+        </form>
+      </AdminFormCard>
+
+      <div className="grid gap-7 xl:grid-cols-2">
+        <AdminFormCard
+          title="A/L Students"
+          description={`${alEntries.length} students recognized for Advanced Level mathematics excellence.`}
+        >
+          <div className="grid gap-3">
+            {alEntries.length ? (
+              alEntries.map(renderEntryCard)
+            ) : (
+              <div className="rounded-[1.4rem] border border-dashed border-white/10 bg-white/[0.03] px-4 py-5 text-sm text-slate-400">
+                No A/L students added yet.
+              </div>
+            )}
+          </div>
+        </AdminFormCard>
+
+        <AdminFormCard
+          title="O/L Students"
+          description={`${olEntries.length} students recognized for Ordinary Level mathematics excellence.`}
+        >
+          <div className="grid gap-3">
+            {olEntries.length ? (
+              olEntries.map(renderEntryCard)
+            ) : (
+              <div className="rounded-[1.4rem] border border-dashed border-white/10 bg-white/[0.03] px-4 py-5 text-sm text-slate-400">
+                No O/L students added yet.
+              </div>
+            )}
+          </div>
+        </AdminFormCard>
+      </div>
+    </>
+  )
 }

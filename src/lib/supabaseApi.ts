@@ -532,3 +532,41 @@ export async function deleteUser(userId: string) {
     )
   }
 }
+
+export async function uploadHallOfFameImage(file: File): Promise<string | null> {
+  if (!hasSupabaseConfig || !supabase) return null
+
+  const extension = file.name.split('.').pop() ?? 'jpg'
+  const fileName = `${crypto.randomUUID()}.${extension}`
+
+  const { error } = await supabase.storage
+    .from('hall-of-fame')
+    .upload(fileName, file, { cacheControl: '3600', upsert: false })
+
+  if (error) throw error
+
+  const { data: urlData } = supabase.storage
+    .from('hall-of-fame')
+    .getPublicUrl(fileName)
+
+  return urlData.publicUrl
+}
+
+export async function createHallOfFameEntry(
+  payload: Omit<HallOfFameEntry, 'id'>,
+) {
+  if (!hasSupabaseConfig || !supabase) return null
+  const { data, error } = await supabase
+    .from('hall_of_fame')
+    .insert(payload)
+    .select('*')
+    .single()
+  if (error) throw error
+  return data as HallOfFameEntry
+}
+
+export async function deleteHallOfFameEntry(id: string) {
+  if (!hasSupabaseConfig || !supabase) return
+  const { error } = await supabase.from('hall_of_fame').delete().eq('id', id)
+  if (error) throw error
+}
