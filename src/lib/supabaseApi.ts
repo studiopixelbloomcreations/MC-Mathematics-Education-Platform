@@ -512,3 +512,10 @@ export async function createMark(payload: Omit<MarkEntry, 'id' | 'created_at'>) 
   const { data } = await supabase.from('marks').insert(payload).select('*').single()
   return data as MarkEntry | null
 }
+
+export async function deleteUser(userId: string) {
+  if (!hasSupabaseConfig || !supabase) return
+  await supabase.from('marks').delete().eq('user_id', userId)
+  const { error } = await supabase.from('users').delete().eq('user_id', userId)
+  if (error) throw error
+}

@@ -1,5 +1,5 @@
 import { format } from 'date-fns'
-import { RotateCcw, Search, ShieldCheck } from 'lucide-react'
+import { RotateCcw, Search, ShieldCheck, Trash2 } from 'lucide-react'
 import { useMemo, useState, type ChangeEventHandler } from 'react'
 import toast from 'react-hot-toast'
 import { AdminFormCard } from '../components/admin/AdminFormCard'
@@ -13,6 +13,7 @@ import {
   createLesson,
   createMark,
   createPaper,
+  deleteUser,
   ensureCurrentMonthClasses,
   generateMonthlyClasses,
   resetDashboardTestingData,
@@ -177,6 +178,20 @@ export function AdminPanelPage() {
       toast.success('Teacher note updated')
     } catch (error) {
       toast.error(getErrorMessage(error, 'Teacher note could not be updated'))
+    }
+  }
+
+  async function handleDeleteUser(userId: string, name: string | null) {
+    const confirmed = window.confirm(
+      `Delete user "${name ?? 'Unnamed'}"? This will remove their profile and marks from Supabase. They can sign up again as a new student.`,
+    )
+    if (!confirmed) return
+    try {
+      await deleteUser(userId)
+      await refresh()
+      toast.success(`User "${name ?? 'Unnamed'}" deleted`)
+    } catch (error) {
+      toast.error(getErrorMessage(error, 'User could not be deleted'))
     }
   }
 
@@ -566,6 +581,13 @@ export function AdminPanelPage() {
                         className="rounded-full border border-white/10 px-4 py-2 text-sm text-slate-300"
                       >
                         Add teacher note
+                      </button>
+                      <button
+                        onClick={() => void handleDeleteUser(user.user_id, user.full_name)}
+                        className="inline-flex items-center gap-1.5 rounded-full border border-rose-400/30 bg-rose-500/10 px-4 py-2 text-sm font-semibold text-rose-200 transition hover:bg-rose-500/20"
+                      >
+                        <Trash2 size={14} />
+                        Delete user
                       </button>
                     </div>
                   </article>
