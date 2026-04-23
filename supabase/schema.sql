@@ -342,6 +342,12 @@ with check (
   or public.is_admin()
 );
 
+drop policy if exists "Admins can delete users" on public.users;
+create policy "Admins can delete users"
+on public.users
+for delete
+using (public.is_admin());
+
 drop policy if exists "Students can read lessons" on public.lessons;
 create policy "Students can read lessons"
 on public.lessons

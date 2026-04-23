@@ -515,7 +515,20 @@ export async function createMark(payload: Omit<MarkEntry, 'id' | 'created_at'>) 
 
 export async function deleteUser(userId: string) {
   if (!hasSupabaseConfig || !supabase) return
+
+  // marks table has ON DELETE CASCADE, so we only need to delete from users.
+  // But we delete marks first explicitly to guarantee removal if cascade is missing.
   await supabase.from('marks').delete().eq('user_id', userId)
-  const { error } = await supabase.from('users').delete().eq('user_id', userId)
+
+  const { error, count } = await supabase
+    .from('users')
+    .delete({ count: 'exact' })
+    .eq('user_id', userId)
+
   if (error) throw error
+  if (count === 0) {
+    throw new Error(
+      'User could not be deleted — the delete was blocked. Please run the latest schema.sql in Supabase to add the admin delete policy.',
+    )
+  }
 }
