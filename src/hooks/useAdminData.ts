@@ -37,10 +37,19 @@ export function useAdminData() {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'users' }, async () => {
         if (isMounted) setData(await fetchAdminData())
       })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'marks' }, async () => {
+        if (isMounted) setData(await fetchAdminData())
+      })
       .on('postgres_changes', { event: '*', schema: 'public', table: 'classes' }, async () => {
         if (isMounted) setData(await fetchAdminData())
       })
       .on('postgres_changes', { event: '*', schema: 'public', table: 'announcements' }, async () => {
+        if (isMounted) setData(await fetchAdminData())
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'lessons' }, async () => {
+        if (isMounted) setData(await fetchAdminData())
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'papers' }, async () => {
         if (isMounted) setData(await fetchAdminData())
       })
       .subscribe()

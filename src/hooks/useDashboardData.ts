@@ -33,10 +33,19 @@ export function useDashboardData(userId: string | null | undefined) {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'marks', filter: `user_id=eq.${userId}` }, async () => {
         if (isMounted) setData(await fetchDashboardData(userId))
       })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'users', filter: `user_id=eq.${userId}` }, async () => {
+        if (isMounted) setData(await fetchDashboardData(userId))
+      })
       .on('postgres_changes', { event: '*', schema: 'public', table: 'announcements' }, async () => {
         if (isMounted) setData(await fetchDashboardData(userId))
       })
       .on('postgres_changes', { event: '*', schema: 'public', table: 'classes' }, async () => {
+        if (isMounted) setData(await fetchDashboardData(userId))
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'lessons' }, async () => {
+        if (isMounted) setData(await fetchDashboardData(userId))
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'papers' }, async () => {
         if (isMounted) setData(await fetchDashboardData(userId))
       })
       .subscribe()
