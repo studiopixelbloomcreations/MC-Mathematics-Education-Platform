@@ -1,10 +1,11 @@
-import { format } from 'date-fns'
+import { format, isAfter } from 'date-fns'
 import { ExternalLink, LogOut, TrendingUp } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { DashboardSidebar } from '../components/dashboard/DashboardSidebar'
 import { OnboardingCard } from '../components/dashboard/OnboardingCard'
 import { ParentLockCard } from '../components/dashboard/ParentLockCard'
+import { ParentalLockOverlay } from '../components/dashboard/ParentalLockOverlay'
 import { ProfileSettingsCard } from '../components/dashboard/ProfileSettingsCard'
 import { EmptyState } from '../components/shared/EmptyState'
 import { StatusPill } from '../components/shared/StatusPill'
@@ -35,11 +36,26 @@ import {
   YAxis,
 } from 'recharts'
 
+const PARENT_LOCK_KEY = 'mc-parent-lock'
+
 export function UserDashboardPage() {
   const { firebaseUser, logout } = useAuth()
   const [activeSection, setActiveSection] = useState('overview')
   const { data, setData } = useDashboardData(firebaseUser?.uid)
   const now = useCurrentTime()
+
+  const [parentLocked, setParentLocked] = useState(() => {
+    const stored = localStorage.getItem(PARENT_LOCK_KEY)
+    return stored ? isAfter(new Date(stored), new Date()) : false
+  })
+
+  const lockUntil = localStorage.getItem(PARENT_LOCK_KEY) ?? ''
+  const lockPassword = data.profile.parent_lock_password ?? ''
+
+  const handleUnlockDashboard = useCallback(() => {
+    localStorage.removeItem(PARENT_LOCK_KEY)
+    setParentLocked(false)
+  }, [])
 
   const sortedClasses = useMemo(() => sortClassesByDate(data.classes), [data.classes])
   const coverage = calculateTheoryCoverage(data.lessons)
@@ -309,6 +325,14 @@ export function UserDashboardPage() {
   }
 
   return (
+    <>
+      {parentLocked && lockPassword && lockUntil ? (
+        <ParentalLockOverlay
+          password={lockPassword}
+          lockUntil={lockUntil}
+          onUnlock={handleUnlockDashboard}
+        />
+      ) : null}
     <div className="px-4 py-8 md:px-6 md:py-10 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="mb-8 flex flex-wrap items-center justify-between gap-5">
@@ -343,7 +367,7 @@ export function UserDashboardPage() {
         </div>
       </div>
     </div>
-  )
+    </>)
 }
 
 function InfoTile({ label, value }: { label: string; value: string }) {

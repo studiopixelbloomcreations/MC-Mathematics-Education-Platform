@@ -1,4 +1,5 @@
 import { addMinutes, isAfter } from 'date-fns'
+import { Clock, Lock, ShieldCheck } from 'lucide-react'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
 import { saveUserProfile } from '../../lib/supabaseApi'
@@ -14,7 +15,6 @@ interface ParentLockCardProps {
 export function ParentLockCard({ profile, onUpdated }: ParentLockCardProps) {
   const [password, setPassword] = useState('')
   const [duration, setDuration] = useState('15')
-  const [unlockAttempt, setUnlockAttempt] = useState('')
   const [locked, setLocked] = useState(() => {
     const local = localStorage.getItem(STORAGE_KEY)
     return local ? isAfter(new Date(local), new Date()) : false
@@ -34,44 +34,38 @@ export function ParentLockCard({ profile, onUpdated }: ParentLockCardProps) {
       parent_lock_until: until,
     })
     onUpdated(updated)
-    toast.success('Parent lock enabled')
-  }
+    toast.success('Parent lock enabled — dashboard is now locked')
 
-  function unlock() {
-    if (unlockAttempt !== (profile.parent_lock_password ?? password)) {
-      toast.error('Incorrect parent lock password')
-      return
-    }
-
-    localStorage.removeItem(STORAGE_KEY)
-    setLocked(false)
-    setUnlockAttempt('')
-    toast.success('Dashboard unlocked')
+    // Force page reload so the overlay picks up the new lock state
+    window.location.reload()
   }
 
   return (
     <div className="glass-panel rounded-[2rem] p-6">
       <h3 className="font-display text-2xl font-semibold text-white">Parent Lock</h3>
       <p className="mt-3 text-sm leading-7 text-slate-300">
-        Add a temporary lock on dashboard access. It is stored locally and can also be synced into Supabase for device continuity.
+        Temporarily lock the dashboard so the student cannot access it. The lock will lift automatically after the chosen duration or when the correct password is entered on the overlay.
       </p>
 
       {locked ? (
-        <div className="mt-6 rounded-[1.6rem] border border-rose-500/20 bg-rose-500/[0.04] p-5">
-          <p className="text-sm text-rose-200">Dashboard is currently locked.</p>
-          <input
-            type="password"
-            placeholder="Enter parent password"
-            value={unlockAttempt}
-            onChange={(event) => setUnlockAttempt(event.target.value)}
-            className="glass-input mt-4 px-4 py-3"
-          />
-          <button
-            onClick={unlock}
-            className="glass-button mt-4 px-5 py-3 font-semibold text-slate-950"
-          >
-            Unlock now
-          </button>
+        <div className="mt-6 rounded-[1.6rem] border border-emerald-500/20 bg-emerald-500/[0.04] p-5">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-400/10">
+              <ShieldCheck size={20} className="text-emerald-300" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-emerald-200">Dashboard is locked</p>
+              <p className="mt-1 text-xs text-slate-400">
+                The student will see a full-screen lock overlay. The lock will auto-expire or can be unlocked with the password.
+              </p>
+            </div>
+          </div>
+          <div className="mt-4 flex items-center gap-2">
+            <Clock size={14} className="text-slate-500" />
+            <p className="text-xs text-slate-400">
+              Lock active until the timer expires or manual unlock.
+            </p>
+          </div>
         </div>
       ) : (
         <div className="mt-6 grid gap-4 md:grid-cols-2">
@@ -81,6 +75,7 @@ export function ParentLockCard({ profile, onUpdated }: ParentLockCardProps) {
               type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
+              placeholder="Set a parent password"
               className="glass-input px-4 py-3"
             />
           </label>
@@ -94,13 +89,16 @@ export function ParentLockCard({ profile, onUpdated }: ParentLockCardProps) {
               <option value="15">15 minutes</option>
               <option value="30">30 minutes</option>
               <option value="60">60 minutes</option>
+              <option value="120">2 hours</option>
+              <option value="180">3 hours</option>
             </select>
           </label>
           <div className="md:col-span-2">
             <button
               onClick={() => void activateLock()}
-              className="glass-button px-5 py-3 font-semibold text-slate-950"
+              className="glass-button inline-flex items-center gap-2 px-5 py-3 font-semibold text-slate-950"
             >
+              <Lock size={16} />
               Enable parent lock
             </button>
           </div>
